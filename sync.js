@@ -65,6 +65,8 @@
         ready=false;
         window.dispatchEvent(new CustomEvent("nuestra-casa-cloud-load",{detail:row.data}));
         ready=true;
+        // Publica en la nube los nombres normalizados de los miembros de la familia.
+        window.dispatchEvent(new Event("nuestra-casa-local-save"));
         status("Sincronizado. Este móvil ya utiliza los datos compartidos de Nuestra Casa.",true);
         showConnected(true);
       }else{
