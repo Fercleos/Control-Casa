@@ -77,9 +77,20 @@
 </section>
 <section id="settings" class="page">
   <div class="section-title"><h2>Familia y permisos</h2><span class="pill">Administrador</span></div>
+  <div class="panel" id="syncPanel" style="margin-bottom:15px">
+    <h3>Sincronización entre móviles</h3>
+    <p class="muted" id="syncStatus" aria-live="polite">Introduce la cuenta familiar para activar la sincronización. La sesión quedará guardada en este teléfono.</p>
+    <form id="syncLoginForm">
+      <div class="field"><label for="syncEmail">Correo de la cuenta familiar</label><input id="syncEmail" type="email" autocomplete="username" required placeholder="Tu correo"></div>
+      <div class="field"><label for="syncPassword">Contraseña de la cuenta familiar</label><input id="syncPassword" type="password" autocomplete="current-password" required placeholder="Contraseña" minlength="6"></div>
+      <button class="add" id="syncLoginBtn" type="submit" style="width:100%">Conectar y sincronizar</button>
+      <small class="muted">Usad la misma cuenta en los cuatro móviles. Solo hace falta iniciar sesión una vez en cada dispositivo.</small>
+    </form>
+    <button class="secondary" id="syncLogoutBtn" type="button" style="display:none;margin-top:10px">Cerrar sesión en este teléfono</button>
+  </div>
   <div class="panel"><h3 style="margin-bottom:10px">Miembros de la casa</h3><div id="membersList"></div></div>
   <div class="panel" style="margin-top:15px"><h3>Preferencias</h3><div class="listrow"><span>🔔</span><div class="grow"><strong>Recordatorios</strong><small>Próximamente</small></div><span class="pill">Por configurar</span></div><div class="listrow"><span>🔐</span><div class="grow"><strong>Privacidad de citas</strong><small>Control de visibilidad por usuario</small></div><span class="pill">Diseño previsto</span></div></div>
-  <div class="panel" style="margin-top:15px"><h3>Copia de seguridad</h3><p class="muted">Guarda los datos actuales de este teléfono antes de activar la sincronización familiar.</p><button class="add" id="exportDataBtn" style="width:100%">Descargar copia de mis datos</button><small class="muted">No borra ni modifica nada de la aplicación.</small></div>
+  <div class="panel" style="margin-top:15px"><h3>Copia de seguridad</h3><p class="muted">Guarda los datos actuales de este teléfono antes de activar la sincronización familiar.</p><button class="add" id="exportDataBtn" style="width:100%">Descargar copia de mis datos</button><div style="margin-top:12px"><input id="importDataFile" type="file" accept=".json,application/json" style="width:100%;margin-bottom:8px"><button class="secondary" id="importDataBtn" type="button" style="width:100%">Restaurar copia JSON</button></div><small class="muted">La restauración reemplaza los datos actuales. Descarga una copia antes de restaurar.</small></div>
 </section>
 </main>
 <nav class="nav"><div class="nav-inner">
@@ -91,6 +102,7 @@
 </div></nav>
 </div>
 <div class="modal-back" id="modalBack"><div class="modal"><div class="modal-head"><h3 id="modalTitle">Añadir</h3><button class="close" id="closeModal">✕</button></div><form id="modalForm"><div id="modalFields"></div><div class="modal-actions"><button type="button" class="secondary" id="cancelModal">Cancelar</button><button class="add" type="submit">Guardar</button></div></form></div></div>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
 const $=s=>document.querySelector(s);
 const state={
@@ -115,8 +127,15 @@ function eventColor(kind){const k=String(kind||"").toLowerCase();if(k.includes("
 function futureDate(n){let d=new Date();d.setDate(d.getDate()+n);return d.toISOString().slice(0,10)}
 function niceDate(s){return new Date(s+"T12:00:00").toLocaleDateString("es-ES",{weekday:"short",day:"numeric",month:"short"})}
 function escapeHtml(s){return String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
-function save(){try{localStorage.setItem("nuestraCasaDemo",JSON.stringify(state))}catch(e){}}
+function save(){try{localStorage.setItem("nuestraCasaDemo",JSON.stringify(state))}catch(e){}window.dispatchEvent(new Event("nuestra-casa-local-save"))}
 function load(){try{let d=JSON.parse(localStorage.getItem("nuestraCasaDemo"));if(d&&d.events&&d.tasks&&d.shopping&&d.meals){Object.assign(state,d);state.events=state.events.filter(e=>!["Revisión médica","Actividad extraescolar","Llamar al dentista"].includes(e.title))}}catch(e){}}
+window.addEventListener("nuestra-casa-cloud-load",e=>{
+  const d=e.detail;
+  if(!d||!Array.isArray(d.events)||!Array.isArray(d.tasks)||!Array.isArray(d.shopping)||!Array.isArray(d.meals))return;
+  Object.assign(state,d);
+  try{localStorage.setItem("nuestraCasaDemo",JSON.stringify(state))}catch(err){}
+  render();
+});
 function eventHTML(e){const color=eventColor(e.kind);const attendees=Array.isArray(e.who)?e.who.join(", "):e.who;return `<button type="button" class="listrow event-edit-row" data-edit-event="${e.id}" aria-label="Editar ${escapeHtml(e.title)}"><span class="dot" style="background:${color}"></span><div class="grow"><strong>${escapeHtml(e.title)}</strong><small>${niceDate(e.date)} · ${escapeHtml(e.time)} · ${escapeHtml(attendees)} · ${escapeHtml(e.kind||"Evento")}</small></div><span class="pill" style="background:${color}20;color:${color}">${escapeHtml(e.kind||"Evento")}</span><span class="event-edit-label">Editar ✎</span></button>`}
 function taskHTML(t){return `<div class="listrow"><input class="check task-check" type="checkbox" data-id="${t.id}" ${t.done?"checked":""}><div class="grow"><strong style="${t.done?'text-decoration:line-through;color:var(--muted)':''}">${escapeHtml(t.title)}</strong><small>${escapeHtml(t.who)} · ${escapeHtml(t.due)}</small></div><button class="delete task-delete" data-id="${t.id}" title="Eliminar">×</button></div>`}
 function productHTML(p){return `<div class="listrow"><input class="check product-check" type="checkbox" data-id="${p.id}" ${p.done?"checked":""}><div class="grow"><strong style="${p.done?'text-decoration:line-through;color:var(--muted)':''}">${escapeHtml(p.name)}</strong><small>${escapeHtml(p.category)}</small></div><button class="delete product-delete" data-id="${p.id}" title="Eliminar">×</button></div>`}
@@ -167,5 +186,6 @@ let savedTheme="light";try{savedTheme=localStorage.getItem("nuestraCasaTheme")||
 load();render();
 if("serviceWorker" in navigator && location.protocol.startsWith("http"))window.addEventListener("load",()=>navigator.serviceWorker.register("./sw.js").catch(()=>{}));
 </script>
+<script src="./sync.js"></script>
 </body>
 </html>
