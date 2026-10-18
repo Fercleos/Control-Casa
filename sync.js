@@ -46,7 +46,12 @@
     ready=false; user=authUser; householdId=null; showConnected(true);
     status("Sesión iniciada. Buscando la casa familiar…");
     try {
-      const {data:members,error:mErr}=await client.from("household_member").select("household_id").eq("user_id",authUser.id).limit(1);
+      let members, mErr;
+      // Algunos despliegues antiguos tienen el nombre en plural; prueba ambos sin bloquear la app.
+      ({data:members,error:mErr}=await client.from("household_member").select("household_id").eq("user_id",authUser.id).limit(1));
+      if(mErr && /household_member.*does not exist|could not find the table/i.test(mErr.message||"")){
+        ({data:members,error:mErr}=await client.from("household_members").select("household_id").eq("user_id",authUser.id).limit(1));
+      }
       if(mErr)throw mErr;
       if(!members||!members.length){
         status("La cuenta ha iniciado sesión, pero aún no está asociada a una casa. En GitHub abre supabase-sync-setup.sql, sustituye REPLACE_WITH_YOUR_EMAIL por tu correo y ejecuta el script completo en SQL Editor.");
