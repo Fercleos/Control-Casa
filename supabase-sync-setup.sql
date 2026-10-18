@@ -1,7 +1,7 @@
 -- Nuestra Casa: habilitar sincronización de estado compartido.
 -- Antes de ejecutar:
 -- 1) Crea UN usuario en Supabase > Authentication > Users (correo y contraseña).
--- 2) Sustituye REPLACE_WITH_YOUR_EMAIL por ese correo.
+-- 2) Sustituye fercleos@gmail.com por ese correo.
 -- 3) Ejecuta el script completo en SQL Editor.
 -- El script no borra datos de las tablas actuales.
 
@@ -41,12 +41,12 @@ CREATE POLICY app_state_update_household
 
 DO $$
 DECLARE
-  v_email text := lower(trim('REPLACE_WITH_YOUR_EMAIL'));
+  v_email text := lower(trim('fercleos@gmail.com'));
   v_user_id uuid;
   v_household_id uuid;
 BEGIN
   IF v_email = 'replace_with_your_email' OR v_email = '' THEN
-    RAISE EXCEPTION 'Edita REPLACE_WITH_YOUR_EMAIL y escribe el correo de la cuenta que has creado en Supabase.';
+    RAISE EXCEPTION 'Edita fercleos@gmail.com y escribe el correo de la cuenta que has creado en Supabase.';
   END IF;
 
   SELECT id INTO v_user_id
