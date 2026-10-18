@@ -1,9 +1,6 @@
--- Nuestra Casa: habilitar sincronización de estado compartido.
--- Antes de ejecutar:
--- 1) Crea UN usuario en Supabase > Authentication > Users (correo y contraseña).
--- 2) Sustituye fercleos@gmail.com por ese correo.
--- 3) Ejecuta el script completo en SQL Editor.
--- El script no borra datos de las tablas actuales.
+-- Nuestra Casa: preparar una casa compartida para la cuenta familiar.
+-- Ejecutar en Supabase SQL Editor. No borra datos de las tablas existentes.
+-- Compatible con household_member o household_members.
 
 CREATE TABLE IF NOT EXISTS public.family_app_state (
   household_id uuid PRIMARY KEY REFERENCES public.households(id) ON DELETE CASCADE,
@@ -16,14 +13,12 @@ ALTER TABLE public.family_app_state ENABLE ROW LEVEL SECURITY;
 
 DROP POLICY IF EXISTS app_state_read_household ON public.family_app_state;
 CREATE POLICY app_state_read_household
-  ON public.family_app_state
-  FOR SELECT TO authenticated
+  ON public.family_app_state FOR SELECT TO authenticated
   USING (public.is_household_member(household_id));
 
 DROP POLICY IF EXISTS app_state_insert_household ON public.family_app_state;
 CREATE POLICY app_state_insert_household
-  ON public.family_app_state
-  FOR INSERT TO authenticated
+  ON public.family_app_state FOR INSERT TO authenticated
   WITH CHECK (
     public.is_household_member(household_id)
     AND updated_by = (SELECT auth.uid())
@@ -31,8 +26,7 @@ CREATE POLICY app_state_insert_household
 
 DROP POLICY IF EXISTS app_state_update_household ON public.family_app_state;
 CREATE POLICY app_state_update_household
-  ON public.family_app_state
-  FOR UPDATE TO authenticated
+  ON public.family_app_state FOR UPDATE TO authenticated
   USING (public.is_household_member(household_id))
   WITH CHECK (
     public.is_household_member(household_id)
@@ -44,11 +38,9 @@ DECLARE
   v_email text := lower(trim('fercleos@gmail.com'));
   v_user_id uuid;
   v_household_id uuid;
+  v_members_table text;
+  v_member_exists boolean;
 BEGIN
-  IF v_email = 'replace_with_your_email' OR v_email = '' THEN
-    RAISE EXCEPTION 'Edita fercleos@gmail.com y escribe el correo de la cuenta que has creado en Supabase.';
-  END IF;
-
   SELECT id INTO v_user_id
   FROM auth.users
   WHERE lower(email) = v_email
@@ -56,13 +48,21 @@ BEGIN
   LIMIT 1;
 
   IF v_user_id IS NULL THEN
-    RAISE EXCEPTION 'No hay un usuario con ese correo en Authentication > Users. Créalo primero y vuelve a ejecutar.';
+    RAISE EXCEPTION 'No encuentro fercleos@gmail.com en Authentication > Users. Comprueba que la cuenta se creó en este mismo proyecto de Supabase.';
   END IF;
 
-  SELECT household_id INTO v_household_id
-  FROM public.household_member
-  WHERE user_id = v_user_id
-  LIMIT 1;
+  IF to_regclass('public.household_member') IS NOT NULL THEN
+    v_members_table := 'household_member';
+  ELSIF to_regclass('public.household_members') IS NOT NULL THEN
+    v_members_table := 'household_members';
+  ELSE
+    RAISE EXCEPTION 'No encuentro household_member ni household_members en este proyecto de Supabase.';
+  END IF;
+
+  EXECUTE format(
+    'SELECT household_id FROM public.%I WHERE user_id = $1 LIMIT 1',
+    v_members_table
+  ) INTO v_household_id USING v_user_id;
 
   IF v_household_id IS NULL THEN
     SELECT id INTO v_household_id
@@ -85,25 +85,26 @@ BEGIN
   END IF;
 
   IF NOT EXISTS (
-    SELECT 1 FROM public.household_member
-    WHERE household_id = v_household_id AND user_id = v_user_id
+    SELECT 1 FROM public.households
+    WHERE id = v_household_id AND created_by = v_user_id
   ) THEN
-    INSERT INTO public.household_member
-      (household_id, user_id, role, permissions, joined_at)
-    VALUES (
-      v_household_id,
-      v_user_id,
-      'admin',
-      '{"calendar":true,"tasks":true,"shopping":true,"meals":true}'::jsonb,
-      now()
-    );
+    -- La cuenta ya pertenece a una casa existente; no se crea otra.
+    NULL;
   END IF;
-END $$;
 
--- Comprobación final: debe salir una casa y una fila de miembro.
-SELECT h.id AS household_id, h.name, hm.user_id, hm.role
-FROM public.households h
-JOIN public.household_member hm ON hm.household_id = h.id
-WHERE h.name = 'Nuestra Casa'
-ORDER BY h.created_at DESC
-LIMIT 5;
+  -- Añade la cuenta como administradora si aún no es miembro.
+  IF v_members_table = 'household_member' THEN
+    EXECUTE 'SELECT EXISTS (SELECT 1 FROM public.household_member WHERE household_id = $1 AND user_id = $2)'
+      INTO STRICT v_member_exists USING v_household_id, v_user_id;
+  ELSE
+    EXECUTE 'SELECT EXISTS (SELECT 1 FROM public.household_members WHERE household_id = $1 AND user_id = $2)'
+      INTO STRICT v_member_exists USING v_household_id, v_user_id;
+  END IF;
+  IF NOT v_member_exists THEN
+    EXECUTE format(
+      'INSERT INTO public.%I (household_id, user_id, role, permissions, joined_at) VALUES ($1, $2, %L, $3, now())',
+      v_members_table, 'admin'
+    ) USING v_household_id, v_user_id, '{"calendar":true,"tasks":true,"shopping":true,"meals":true}'::jsonb;
+  END IF;
+  RAISE NOTICE 'Nuestra Casa preparada. household_id=%', v_household_id;
+END $;
