@@ -60,7 +60,7 @@ BEGIN
   END IF;
 
   SELECT household_id INTO v_household_id
-  FROM public.households_members
+  FROM public.household_member
   WHERE user_id = v_user_id
   LIMIT 1;
 
@@ -85,10 +85,10 @@ BEGIN
   END IF;
 
   IF NOT EXISTS (
-    SELECT 1 FROM public.households_members
+    SELECT 1 FROM public.household_member
     WHERE household_id = v_household_id AND user_id = v_user_id
   ) THEN
-    INSERT INTO public.households_members
+    INSERT INTO public.household_member
       (household_id, user_id, role, permissions, joined_at)
     VALUES (
       v_household_id,
@@ -103,7 +103,7 @@ END $$;
 -- Comprobación final: debe salir una casa y una fila de miembro.
 SELECT h.id AS household_id, h.name, hm.user_id, hm.role
 FROM public.households h
-JOIN public.households_members hm ON hm.household_id = h.id
+JOIN public.household_member hm ON hm.household_id = h.id
 WHERE h.name = 'Nuestra Casa'
 ORDER BY h.created_at DESC
 LIMIT 5;
