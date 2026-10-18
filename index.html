@@ -48,8 +48,8 @@
 </section>
 <section id="shopping" class="page">
   <div class="section-title"><h2>Lista de la compra</h2><span class="pill" id="shoppingCount">0 pendientes</span></div>
-  <form class="inputrow" id="shoppingForm"><input id="shoppingInput" placeholder="Añadir producto (ej. leche)" aria-label="Producto" required><button class="add">＋ Añadir</button></form>
-  <div class="filters"><button class="chip active">Todos los productos</button><button class="chip">Alimentación</button><button class="chip">Hogar</button></div>
+  <form class="inputrow" id="shoppingForm"><input id="shoppingInput" placeholder="Añadir producto (ej. leche)" aria-label="Producto" required><select id="shoppingCategory" aria-label="Categoría" style="width:135px;flex:0 0 135px;border:1px solid var(--line);background:var(--card);border-radius:12px;padding:8px;color:var(--ink)"><option>Alimentación</option><option>Fruta y verdura</option><option>Carne y pescado</option><option>Lácteos</option><option>Panadería</option><option>Bebidas</option><option>Hogar</option><option>Higiene</option><option>Mascotas</option><option>Otros</option></select><button class="add">＋ Añadir</button></form>
+  <div class="filters" id="shoppingFilters"><button class="chip active" data-shopping-filter="Todos">Todos los productos</button><button class="chip" data-shopping-filter="Alimentación">Alimentación</button><button class="chip" data-shopping-filter="Hogar">Hogar</button><button class="chip" data-shopping-filter="Mascotas">Mascotas</button><button class="chip" data-shopping-filter="Otros">Otros</button></div>
   <div class="full-list" id="shoppingList"></div>
   <div class="notice">💡 En la versión final, todos podrán añadir y marcar productos. Modificar o borrar dependerá de los permisos que configure el administrador.</div>
 </section>
@@ -96,7 +96,7 @@ const state={
   {day:"Lunes",lunch:"Pollo con arroz",dinner:"Tortilla y ensalada"},{day:"Martes",lunch:"Lentejas",dinner:"Pescado al horno"},{day:"Miércoles",lunch:"Pasta con tomate",dinner:"Crema de verduras"},{day:"Jueves",lunch:"Merluza con patatas",dinner:"Sándwiches caseros"},{day:"Viernes",lunch:"Arroz con verduras",dinner:"Pizza casera"},{day:"Sábado",lunch:"Comida en familia",dinner:"Ensalada completa"},{day:"Domingo",lunch:"Pollo al horno",dinner:"Cena ligera"}],
  members:[{name:"Administrador",role:"Administrador",initial:"A"},{name:"Miembro 2",role:"Adulto",initial:"M"},{name:"Miembro 3",role:"Adolescente",initial:"M"},{name:"Miembro 4",role:"Adolescente",initial:"M"}]
 };
-let nextId=100, modalType=null, taskFilter="all";
+let nextId=100, modalType=null, taskFilter="all", shoppingFilter="Todos";
 function futureDate(n){let d=new Date();d.setDate(d.getDate()+n);return d.toISOString().slice(0,10)}
 function niceDate(s){return new Date(s+"T12:00:00").toLocaleDateString("es-ES",{weekday:"short",day:"numeric",month:"short"})}
 function escapeHtml(s){return String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
@@ -113,7 +113,7 @@ function render(){
  const today=new Date().getDay();const meal=state.meals[(today+6)%7];$("#homeMeal").innerHTML=`<div class="mealrow"><span>☀️</span><div class="producttext"><strong>Almuerzo</strong><span>${escapeHtml(meal.lunch)}</span></div></div><div class="mealrow"><span>🌙</span><div class="producttext"><strong>Cena</strong><span>${escapeHtml(meal.dinner)}</span></div></div>`;
  $("#eventsList").innerHTML=ev.map(eventHTML).join("")||'<div class="empty">Todavía no hay eventos. Añade el primero.</div>';
  let ts=state.tasks.filter(t=>taskFilter==="all"||(taskFilter==="open"&&!t.done)||(taskFilter==="done"&&t.done));$("#tasksList").innerHTML=ts.map(taskHTML).join("")||'<div class="empty">No hay tareas en esta vista.</div>';
- $("#shoppingList").innerHTML=state.shopping.map(productHTML).join("")||'<div class="empty">La lista está vacía. Añade el primer producto.</div>';$("#shoppingCount").textContent=state.shopping.filter(p=>!p.done).length+" pendientes";
+ $("#shoppingList").innerHTML=state.shopping.filter(p=>shoppingFilter==="Todos"||p.category===shoppingFilter).map(productHTML).join("")||'<div class="empty">No hay productos en esta categoría.</div>';$("#shoppingCount").textContent=state.shopping.filter(p=>!p.done).length+" pendientes";
  $("#mealGrid").innerHTML=state.meals.map((m,i)=>`<div class="mealcard"><div class="day">${m.day}</div><h4>🍽️ Almuerzo</h4><p>${escapeHtml(m.lunch)}</p><h4>🌙 Cena</h4><p>${escapeHtml(m.dinner)}</p><button class="small-link edit-meal" data-index="${i}">Editar menú</button></div>`).join("");
  $("#membersList").innerHTML=state.members.map((m,i)=>`<div class="member"><div class="avatar">${m.initial}</div><div class="grow"><strong>${escapeHtml(m.name)}</strong><small class="muted">${i===0?"Control total del hogar":"Acceso individual"}</small></div><select data-member="${i}" aria-label="Rol de ${escapeHtml(m.name)}"><option ${m.role==="Administrador"?"selected":""}>Administrador</option><option ${m.role==="Adulto"?"selected":""}>Adulto</option><option ${m.role==="Adolescente"?"selected":""}>Adolescente</option></select></div>`).join("");
  save();
@@ -132,10 +132,11 @@ function openModal(type,extra=null){modalType=type;$("#modalFields").innerHTML="
 function closeModal(){$("#modalBack").classList.remove("open");modalType=null}
 $("#addEventBtn").onclick=()=>openModal("event");$("#addTaskBtn").onclick=()=>openModal("task");$("#addMealBtn").onclick=()=>openModal("meal",0);$("#closeModal").onclick=closeModal;$("#cancelModal").onclick=closeModal;$("#modalBack").addEventListener("click",e=>{if(e.target===$("#modalBack"))closeModal()});
 $("#modalForm").addEventListener("submit",e=>{e.preventDefault();let d=Object.fromEntries(new FormData(e.currentTarget).entries());if(modalType==="event")state.events.push({id:nextId++,...d});if(modalType==="task")state.tasks.push({id:nextId++,...d,done:false});if(modalType==="meal"){let i=Number(d.index);state.meals[i]={day:d.day,lunch:d.lunch,dinner:d.dinner}}closeModal();render()});
-$("#shoppingForm").addEventListener("submit",e=>{e.preventDefault();let name=$("#shoppingInput").value.trim();if(name){state.shopping.push({id:nextId++,name,category:"Alimentación",done:false});$("#shoppingInput").value="";render()}});
+$("#shoppingForm").addEventListener("submit",e=>{e.preventDefault();let name=$("#shoppingInput").value.trim();if(name){state.shopping.push({id:nextId++,name,category:$("#shoppingCategory").value,done:false});$("#shoppingInput").value="";render()}});
 document.addEventListener("change",e=>{if(e.target.matches(".task-check")){let t=state.tasks.find(x=>x.id===Number(e.target.dataset.id));if(t)t.done=e.target.checked;render()}if(e.target.matches(".product-check")){let p=state.shopping.find(x=>x.id===Number(e.target.dataset.id));if(p)p.done=e.target.checked;render()}if(e.target.matches("[data-member]")){let i=Number(e.target.dataset.member);if(i===0&&e.target.value!=="Administrador"){alert("El administrador principal no puede quitarse sus propios permisos desde esta pantalla de demostración.");render();return}state.members[i].role=e.target.value;render()}});
 document.addEventListener("click",e=>{let b=e.target.closest(".task-delete");if(b){state.tasks=state.tasks.filter(t=>t.id!==Number(b.dataset.id));render()}let p=e.target.closest(".product-delete");if(p){state.shopping=state.shopping.filter(x=>x.id!==Number(p.dataset.id));render()}let m=e.target.closest(".edit-meal");if(m)openModal("meal",Number(m.dataset.index));});
 document.querySelectorAll("[data-task-filter]").forEach(b=>b.onclick=()=>{taskFilter=b.dataset.taskFilter;document.querySelectorAll("[data-task-filter]").forEach(x=>x.classList.toggle("active",x===b));render()});
+document.querySelectorAll("[data-shopping-filter]").forEach(b=>b.onclick=()=>{shoppingFilter=b.dataset.shoppingFilter;document.querySelectorAll("[data-shopping-filter]").forEach(x=>x.classList.toggle("active",x===b));render()});
 $("#makeShopping").onclick=()=>alert("En la siguiente versión, cada receta tendrá ingredientes y podrás añadirlos a la compra automáticamente.");
 $("#profileBtn").onclick=()=>go("settings");
 load();render();
