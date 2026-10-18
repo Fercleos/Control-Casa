@@ -1,0 +1,145 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#176b5b">
+<meta name="description" content="Organizador familiar compartido: calendario, tareas, compra y comidas.">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icon.svg" type="image/svg+xml">
+<title>Nuestra Casa</title>
+<style>
+:root{--green:#176b5b;--green2:#e4f3ee;--ink:#1d302d;--muted:#6b7d79;--bg:#f5f8f6;--card:#fff;--line:#e1e9e5;--orange:#f5a65b;--blue:#4d83c5;--purple:#8d70c6;--shadow:0 6px 24px #163d3010}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:var(--ink)}button,input,select,textarea{font:inherit}button{cursor:pointer}.app{max-width:1120px;margin:auto;min-height:100vh;padding-bottom:88px}.top{padding:22px 20px 18px;background:linear-gradient(135deg,#176b5b,#258c75);color:#fff;border-radius:0 0 28px 28px}.toprow{display:flex;justify-content:space-between;align-items:center;gap:12px}.brand{display:flex;gap:11px;align-items:center}.logo{width:44px;height:44px;border-radius:15px;background:#ffffff24;display:grid;place-items:center;font-size:24px}.eyebrow{font-size:11px;letter-spacing:.13em;text-transform:uppercase;opacity:.8;font-weight:700}.top h1{font-size:25px;margin:3px 0 0}.profile{border:1px solid #ffffff55;background:#ffffff1a;color:#fff;border-radius:14px;padding:9px 11px}.date-line{margin-top:20px;font-size:14px;opacity:.92}.content{padding:20px}.welcome{display:flex;justify-content:space-between;align-items:end;gap:12px;margin-bottom:18px}.welcome h2{margin:0;font-size:23px}.welcome p{margin:5px 0 0;color:var(--muted);font-size:14px}.demo{font-size:11px;background:#fff0d9;color:#89520c;border-radius:100px;padding:7px 10px;white-space:nowrap}.quick{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:20px}.quick button{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:17px 8px;text-align:center;color:var(--ink);box-shadow:var(--shadow)}.quick .ico{display:block;font-size:25px;margin-bottom:8px}.quick strong{font-size:13px}.quick button:active,.nav button:active{transform:scale(.98)}.grid{display:grid;grid-template-columns:1.15fr .85fr;gap:16px}.panel{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:18px;box-shadow:var(--shadow);min-width:0}.panel-head{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:13px}.panel h3{margin:0;font-size:16px}.small-link{border:0;background:none;color:var(--green);font-weight:700;font-size:12px;padding:6px}.event,.task,.product,.mealrow{display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid var(--line)}.event:last-child,.task:last-child,.product:last-child,.mealrow:last-child{border-bottom:0;padding-bottom:0}.time{width:52px;color:var(--green);font-weight:800;font-size:13px}.eventtext,.tasktext,.producttext{flex:1;min-width:0}.eventtext strong,.tasktext strong,.producttext strong{display:block;font-size:14px}.eventtext span,.tasktext span,.producttext span{display:block;color:var(--muted);font-size:12px;margin-top:4px}.pill{font-size:11px;padding:5px 8px;border-radius:99px;background:var(--green2);color:var(--green);white-space:nowrap}.dot{width:10px;height:10px;border-radius:50%;background:var(--orange);flex-shrink:0}.check{width:21px;height:21px;accent-color:var(--green);flex-shrink:0}.add{border:0;background:var(--green);color:white;padding:10px 13px;border-radius:12px;font-weight:700;font-size:13px}.muted{color:var(--muted)}.page{display:none}.page.active{display:block}.section-title{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:16px}.section-title h2{margin:0;font-size:23px}.filters{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:15px}.chip{border:1px solid var(--line);background:white;border-radius:99px;padding:8px 12px;font-size:12px;color:var(--muted)}.chip.active{background:var(--green2);color:var(--green);border-color:#b8dfd3}.full-list{background:white;border:1px solid var(--line);border-radius:18px;padding:4px 16px}.listrow{display:flex;align-items:center;gap:12px;padding:14px 0;border-bottom:1px solid var(--line)}.listrow:last-child{border:0}.listrow .grow{flex:1;min-width:0}.listrow strong{font-size:14px}.listrow small{display:block;color:var(--muted);margin-top:4px}.delete{border:0;background:#fff0ed;color:#b64736;border-radius:10px;padding:7px 9px}.inputrow{display:flex;gap:8px;margin-bottom:14px}.inputrow input,.field input,.field select,.field textarea{width:100%;min-width:0;border:1px solid var(--line);background:white;border-radius:12px;padding:12px;color:var(--ink)}.inputrow input{flex:1}.field{display:grid;gap:6px;margin-bottom:13px}.field label{font-size:12px;font-weight:700;color:var(--muted)}.mealgrid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}.mealcard{border:1px solid var(--line);border-radius:16px;padding:15px;background:#fff}.mealcard .day{font-size:11px;text-transform:uppercase;color:var(--muted);font-weight:800;letter-spacing:.08em}.mealcard h4{margin:8px 0 4px}.mealcard p{font-size:13px;color:var(--muted);margin:0}.member{display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid var(--line)}.avatar{width:40px;height:40px;border-radius:14px;background:var(--green2);color:var(--green);display:grid;place-items:center;font-weight:800}.member .grow{flex:1}.member select{max-width:165px;border:1px solid var(--line);border-radius:10px;padding:8px;background:white}.notice{background:#fff8e9;border:1px solid #f4dfb3;border-radius:14px;padding:12px;font-size:12px;color:#77521c;line-height:1.5;margin-top:14px}.nav{position:fixed;bottom:0;left:0;right:0;background:#ffffffed;backdrop-filter:blur(12px);border-top:1px solid var(--line);display:flex;justify-content:center;z-index:5;padding:8px max(8px,env(safe-area-inset-right)) calc(8px + env(safe-area-inset-bottom)) max(8px,env(safe-area-inset-left))}.nav-inner{width:100%;max-width:700px;display:grid;grid-template-columns:repeat(5,1fr);gap:4px}.nav button{border:0;background:transparent;color:var(--muted);padding:7px 2px;border-radius:12px;font-size:10px}.nav button span{display:block;font-size:20px;margin-bottom:3px}.nav button.active{color:var(--green);background:var(--green2);font-weight:800}.modal-back{position:fixed;inset:0;background:#0c201bcc;display:none;align-items:end;justify-content:center;z-index:10;padding:14px}.modal-back.open{display:flex}.modal{background:var(--bg);border-radius:24px 24px 18px 18px;padding:22px;width:100%;max-width:520px;max-height:90vh;overflow:auto}.modal-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px}.modal-head h3{margin:0}.close{border:0;background:white;border-radius:10px;padding:8px}.modal-actions{display:flex;gap:8px;justify-content:end;margin-top:15px}.secondary{border:1px solid var(--line);background:white;border-radius:12px;padding:10px 13px}.empty{padding:24px;text-align:center;color:var(--muted);font-size:13px}@media(max-width:720px){.content{padding:15px}.grid{grid-template-columns:1fr}.quick{gap:8px}.quick button{padding:13px 3px}.quick strong{font-size:11px}.welcome h2{font-size:21px}.demo{display:none}.panel{padding:15px}.mealgrid{grid-template-columns:1fr 1fr}}@media(min-width:721px){.top{margin-top:16px;border-radius:28px}.app{padding-bottom:30px}.nav{position:sticky;bottom:0;border:1px solid var(--line);border-radius:18px;margin:0 auto 12px;max-width:700px}.nav-inner{max-width:none}}
+</style>
+</head>
+<body>
+<div class="app">
+<header class="top">
+  <div class="toprow"><div class="brand"><div class="logo">⌂</div><div><div class="eyebrow">Organizador familiar</div><h1>Nuestra Casa</h1></div></div><button class="profile" id="profileBtn">👤 Familia</button></div>
+  <div class="date-line" id="todayLabel">Todo lo importante, en un mismo lugar.</div>
+</header>
+<main class="content">
+<section id="home" class="page active">
+  <div class="welcome"><div><h2>¡Buenos días!</h2><p>Esto es lo que tenemos en marcha.</p></div><span class="demo">PROTOTIPO</span></div>
+  <div class="quick">
+    <button data-go="calendar"><span class="ico">🗓️</span><strong>Calendario</strong></button>
+    <button data-go="tasks"><span class="ico">☑️</span><strong>Tareas</strong></button>
+    <button data-go="shopping"><span class="ico">🛒</span><strong>Compra</strong></button>
+    <button data-go="meals"><span class="ico">🍲</span><strong>Comidas</strong></button>
+  </div>
+  <div class="grid">
+    <div class="panel"><div class="panel-head"><h3>Próximos eventos</h3><button class="small-link" data-go="calendar">Ver calendario →</button></div><div id="homeEvents"></div></div>
+    <div class="panel"><div class="panel-head"><h3>Tareas pendientes</h3><button class="small-link" data-go="tasks">Ver todas →</button></div><div id="homeTasks"></div></div>
+    <div class="panel"><div class="panel-head"><h3>Faltan en casa</h3><button class="small-link" data-go="shopping">Ver compra →</button></div><div id="homeShopping"></div></div>
+    <div class="panel"><div class="panel-head"><h3>Menú de hoy</h3><button class="small-link" data-go="meals">Planificar →</button></div><div id="homeMeal"></div></div>
+  </div>
+</section>
+<section id="calendar" class="page">
+  <div class="section-title"><h2>Calendario familiar</h2><button class="add" id="addEventBtn">＋ Evento</button></div>
+  <div class="filters"><button class="chip active">Próximos eventos</button><button class="chip">Este mes</button></div>
+  <div class="full-list" id="eventsList"></div>
+  <div class="notice">🔒 En la versión final, cada evento podrá tener asistentes y un nivel de privacidad. Los detalles médicos privados solo serán visibles para las personas autorizadas.</div>
+</section>
+<section id="tasks" class="page">
+  <div class="section-title"><h2>Tareas del hogar</h2><button class="add" id="addTaskBtn">＋ Tarea</button></div>
+  <div class="filters"><button class="chip active" data-task-filter="all">Todas</button><button class="chip" data-task-filter="open">Pendientes</button><button class="chip" data-task-filter="done">Hechas</button></div>
+  <div class="full-list" id="tasksList"></div>
+</section>
+<section id="shopping" class="page">
+  <div class="section-title"><h2>Lista de la compra</h2><span class="pill" id="shoppingCount">0 pendientes</span></div>
+  <form class="inputrow" id="shoppingForm"><input id="shoppingInput" placeholder="Añadir producto (ej. leche)" aria-label="Producto" required><button class="add">＋ Añadir</button></form>
+  <div class="filters"><button class="chip active">Todos los productos</button><button class="chip">Alimentación</button><button class="chip">Hogar</button></div>
+  <div class="full-list" id="shoppingList"></div>
+  <div class="notice">💡 En la versión final, todos podrán añadir y marcar productos. Modificar o borrar dependerá de los permisos que configure el administrador.</div>
+</section>
+<section id="meals" class="page">
+  <div class="section-title"><h2>Menú semanal</h2><button class="add" id="addMealBtn">＋ Comida</button></div>
+  <div class="filters"><button class="chip active">Esta semana</button><button class="chip">Recetas guardadas</button></div>
+  <div class="mealgrid" id="mealGrid"></div>
+  <button class="add" id="makeShopping" style="width:100%;margin-top:14px">＋ Pasar ingredientes a la compra</button>
+  <div class="notice">🥕 La integración automática de ingredientes se activará en una siguiente fase, cuando las recetas tengan ingredientes definidos.</div>
+</section>
+<section id="settings" class="page">
+  <div class="section-title"><h2>Familia y permisos</h2><span class="pill">Administrador</span></div>
+  <div class="panel"><h3 style="margin-bottom:10px">Miembros de la casa</h3><div id="membersList"></div><div class="notice">Esta pantalla muestra el diseño previsto. Las cuentas reales, invitaciones y permisos seguros requieren conectar un servicio de autenticación y una base de datos en la nube.</div></div>
+  <div class="panel" style="margin-top:15px"><h3>Preferencias</h3><div class="listrow"><span>🔔</span><div class="grow"><strong>Recordatorios</strong><small>Próximamente</small></div><span class="pill">Por configurar</span></div><div class="listrow"><span>🔐</span><div class="grow"><strong>Privacidad de citas</strong><small>Control de visibilidad por usuario</small></div><span class="pill">Diseño previsto</span></div></div>
+</section>
+</main>
+<nav class="nav"><div class="nav-inner">
+<button class="active" data-go="home"><span>⌂</span>Inicio</button>
+<button data-go="calendar"><span>🗓️</span>Calendario</button>
+<button data-go="tasks"><span>☑️</span>Tareas</button>
+<button data-go="shopping"><span>🛒</span>Compra</button>
+<button data-go="settings"><span>⚙️</span>Familia</button>
+</div></nav>
+</div>
+<div class="modal-back" id="modalBack"><div class="modal"><div class="modal-head"><h3 id="modalTitle">Añadir</h3><button class="close" id="closeModal">✕</button></div><form id="modalForm"><div id="modalFields"></div><div class="modal-actions"><button type="button" class="secondary" id="cancelModal">Cancelar</button><button class="add" type="submit">Guardar</button></div></form></div></div>
+<script>
+const $=s=>document.querySelector(s);
+const state={
+ events:[
+  {id:1,date:futureDate(1),time:"10:30",title:"Revisión médica",who:"Mamá",kind:"Salud"},
+  {id:2,date:futureDate(2),time:"17:00",title:"Actividad extraescolar",who:"Samuel",kind:"Familia"},
+  {id:3,date:futureDate(4),time:"09:15",title:"Llamar al dentista",who:"Papá",kind:"Gestión"}
+ ],
+ tasks:[
+  {id:1,title:"Poner una lavadora",who:"Mamá",due:"Hoy",done:false},
+  {id:2,title:"Sacar la basura",who:"Papá",due:"Hoy",done:false},
+  {id:3,title:"Ordenar la habitación",who:"Samuel",due:"Mañana",done:false},
+  {id:4,title:"Preparar mochilas",who:"David",due:"Hoy",done:true}
+ ],
+ shopping:[
+  {id:1,name:"Leche",category:"Alimentación",done:false},{id:2,name:"Huevos",category:"Alimentación",done:false},{id:3,name:"Detergente",category:"Hogar",done:true},{id:4,name:"Tomates",category:"Alimentación",done:false}
+ ],
+ meals:[
+  {day:"Lunes",lunch:"Pollo con arroz",dinner:"Tortilla y ensalada"},{day:"Martes",lunch:"Lentejas",dinner:"Pescado al horno"},{day:"Miércoles",lunch:"Pasta con tomate",dinner:"Crema de verduras"},{day:"Jueves",lunch:"Merluza con patatas",dinner:"Sándwiches caseros"},{day:"Viernes",lunch:"Arroz con verduras",dinner:"Pizza casera"},{day:"Sábado",lunch:"Comida en familia",dinner:"Ensalada completa"},{day:"Domingo",lunch:"Pollo al horno",dinner:"Cena ligera"}],
+ members:[{name:"Administrador",role:"Administrador",initial:"A"},{name:"Miembro 2",role:"Adulto",initial:"M"},{name:"Miembro 3",role:"Adolescente",initial:"M"},{name:"Miembro 4",role:"Adolescente",initial:"M"}]
+};
+let nextId=100, modalType=null, taskFilter="all";
+function futureDate(n){let d=new Date();d.setDate(d.getDate()+n);return d.toISOString().slice(0,10)}
+function niceDate(s){return new Date(s+"T12:00:00").toLocaleDateString("es-ES",{weekday:"short",day:"numeric",month:"short"})}
+function escapeHtml(s){return String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
+function save(){try{localStorage.setItem("nuestraCasaDemo",JSON.stringify(state))}catch(e){}}
+function load(){try{let d=JSON.parse(localStorage.getItem("nuestraCasaDemo"));if(d&&d.events&&d.tasks&&d.shopping&&d.meals){Object.assign(state,d)}}catch(e){}}
+function eventHTML(e){return `<div class="listrow"><span class="dot"></span><div class="grow"><strong>${escapeHtml(e.title)}</strong><small>${niceDate(e.date)} · ${escapeHtml(e.time)} · ${escapeHtml(e.who)} · ${escapeHtml(e.kind||"Evento")}</small></div><span class="pill">${escapeHtml(e.kind||"Evento")}</span></div>`}
+function taskHTML(t){return `<div class="listrow"><input class="check task-check" type="checkbox" data-id="${t.id}" ${t.done?"checked":""}><div class="grow"><strong style="${t.done?'text-decoration:line-through;color:var(--muted)':''}">${escapeHtml(t.title)}</strong><small>${escapeHtml(t.who)} · ${escapeHtml(t.due)}</small></div><button class="delete task-delete" data-id="${t.id}" title="Eliminar">×</button></div>`}
+function productHTML(p){return `<div class="listrow"><input class="check product-check" type="checkbox" data-id="${p.id}" ${p.done?"checked":""}><div class="grow"><strong style="${p.done?'text-decoration:line-through;color:var(--muted)':''}">${escapeHtml(p.name)}</strong><small>${escapeHtml(p.category)}</small></div><button class="delete product-delete" data-id="${p.id}" title="Eliminar">×</button></div>`}
+function render(){
+ const ev=[...state.events].sort((a,b)=>(a.date+a.time).localeCompare(b.date+b.time));
+ $("#homeEvents").innerHTML=ev.slice(0,3).map(e=>`<div class="event"><div class="time">${escapeHtml(e.time)}</div><div class="eventtext"><strong>${escapeHtml(e.title)}</strong><span>${niceDate(e.date)} · ${escapeHtml(e.who)}</span></div></div>`).join("")||'<div class="empty">No hay eventos próximos.</div>';
+ const open=state.tasks.filter(t=>!t.done);$("#homeTasks").innerHTML=open.slice(0,3).map(t=>`<div class="task"><span class="dot"></span><div class="tasktext"><strong>${escapeHtml(t.title)}</strong><span>${escapeHtml(t.who)} · ${escapeHtml(t.due)}</span></div></div>`).join("")||'<div class="empty">Todo al día. ¡Buen trabajo!</div>';
+ $("#homeShopping").innerHTML=state.shopping.filter(p=>!p.done).slice(0,3).map(p=>`<div class="product"><span>🛒</span><div class="producttext"><strong>${escapeHtml(p.name)}</strong><span>${escapeHtml(p.category)}</span></div></div>`).join("")||'<div class="empty">No falta nada en la lista.</div>';
+ const today=new Date().getDay();const meal=state.meals[(today+6)%7];$("#homeMeal").innerHTML=`<div class="mealrow"><span>☀️</span><div class="producttext"><strong>Almuerzo</strong><span>${escapeHtml(meal.lunch)}</span></div></div><div class="mealrow"><span>🌙</span><div class="producttext"><strong>Cena</strong><span>${escapeHtml(meal.dinner)}</span></div></div>`;
+ $("#eventsList").innerHTML=ev.map(eventHTML).join("")||'<div class="empty">Todavía no hay eventos. Añade el primero.</div>';
+ let ts=state.tasks.filter(t=>taskFilter==="all"||(taskFilter==="open"&&!t.done)||(taskFilter==="done"&&t.done));$("#tasksList").innerHTML=ts.map(taskHTML).join("")||'<div class="empty">No hay tareas en esta vista.</div>';
+ $("#shoppingList").innerHTML=state.shopping.map(productHTML).join("")||'<div class="empty">La lista está vacía. Añade el primer producto.</div>';$("#shoppingCount").textContent=state.shopping.filter(p=>!p.done).length+" pendientes";
+ $("#mealGrid").innerHTML=state.meals.map((m,i)=>`<div class="mealcard"><div class="day">${m.day}</div><h4>🍽️ Almuerzo</h4><p>${escapeHtml(m.lunch)}</p><h4>🌙 Cena</h4><p>${escapeHtml(m.dinner)}</p><button class="small-link edit-meal" data-index="${i}">Editar menú</button></div>`).join("");
+ $("#membersList").innerHTML=state.members.map((m,i)=>`<div class="member"><div class="avatar">${m.initial}</div><div class="grow"><strong>${escapeHtml(m.name)}</strong><small class="muted">${i===0?"Control total del hogar":"Acceso individual"}</small></div><select data-member="${i}" aria-label="Rol de ${escapeHtml(m.name)}"><option ${m.role==="Administrador"?"selected":""}>Administrador</option><option ${m.role==="Adulto"?"selected":""}>Adulto</option><option ${m.role==="Adolescente"?"selected":""}>Adolescente</option></select></div>`).join("");
+ save();
+}
+function go(id){document.querySelectorAll(".page").forEach(p=>p.classList.toggle("active",p.id===id));document.querySelectorAll("[data-go]").forEach(b=>b.classList.toggle("active",b.dataset.go===id));window.scrollTo({top:0,behavior:"smooth"})}
+document.querySelectorAll("[data-go]").forEach(b=>b.addEventListener("click",()=>go(b.dataset.go)));
+$("#todayLabel").textContent=new Date().toLocaleDateString("es-ES",{weekday:"long",day:"numeric",month:"long"});
+function openModal(type,extra=null){modalType=type;$("#modalFields").innerHTML="";$("#modalTitle").textContent=type==="event"?"Nuevo evento":type==="task"?"Nueva tarea":type==="meal"?"Editar menú":"Añadir";
+ let fields=[];
+ if(type==="event") fields=[["title","Nombre del evento","text",""],["date","Fecha","date",futureDate(1)],["time","Hora","time","10:00"],["who","¿Quién?","select","Papá","Mamá","David","Samuel","Toda la familia"],["kind","Tipo","select","Familia","Salud","Colegio","Gestión","Otro"]];
+ if(type==="task") fields=[["title","Tarea","text",""],["who","Asignar a","select","Papá","Mamá","David","Samuel","Toda la familia"],["due","Cuándo","select","Hoy","Mañana","Esta semana"]];
+ if(type==="meal") fields=[["day","Día","text",state.meals[extra].day],["lunch","Almuerzo","text",state.meals[extra].lunch],["dinner","Cena","text",state.meals[extra].dinner],["index","idx","hidden",String(extra)]];
+ fields.forEach(f=>{let [name,label,type0,val,...opts]=f;let wrap=document.createElement("div");wrap.className="field";if(type0!=="hidden"){let l=document.createElement("label");l.textContent=label;l.htmlFor="f_"+name;wrap.appendChild(l)}let el;if(type0==="select"){el=document.createElement("select");[val,...opts].forEach(o=>{let op=document.createElement("option");op.value=o;op.textContent=o;el.appendChild(op)})}else{el=document.createElement("input");el.type=type0;el.value=val}el.id="f_"+name;el.name=name;if(name==="title")el.required=true;if(type0==="hidden")wrap.style.display="none";wrap.appendChild(el);$("#modalFields").appendChild(wrap)});
+ $("#modalBack").classList.add("open");
+}
+function closeModal(){$("#modalBack").classList.remove("open");modalType=null}
+$("#addEventBtn").onclick=()=>openModal("event");$("#addTaskBtn").onclick=()=>openModal("task");$("#addMealBtn").onclick=()=>openModal("meal",0);$("#closeModal").onclick=closeModal;$("#cancelModal").onclick=closeModal;$("#modalBack").addEventListener("click",e=>{if(e.target===$("#modalBack"))closeModal()});
+$("#modalForm").addEventListener("submit",e=>{e.preventDefault();let d=Object.fromEntries(new FormData(e.currentTarget).entries());if(modalType==="event")state.events.push({id:nextId++,...d});if(modalType==="task")state.tasks.push({id:nextId++,...d,done:false});if(modalType==="meal"){let i=Number(d.index);state.meals[i]={day:d.day,lunch:d.lunch,dinner:d.dinner}}closeModal();render()});
+$("#shoppingForm").addEventListener("submit",e=>{e.preventDefault();let name=$("#shoppingInput").value.trim();if(name){state.shopping.push({id:nextId++,name,category:"Alimentación",done:false});$("#shoppingInput").value="";render()}});
+document.addEventListener("change",e=>{if(e.target.matches(".task-check")){let t=state.tasks.find(x=>x.id===Number(e.target.dataset.id));if(t)t.done=e.target.checked;render()}if(e.target.matches(".product-check")){let p=state.shopping.find(x=>x.id===Number(e.target.dataset.id));if(p)p.done=e.target.checked;render()}if(e.target.matches("[data-member]")){let i=Number(e.target.dataset.member);if(i===0&&e.target.value!=="Administrador"){alert("El administrador principal no puede quitarse sus propios permisos desde esta pantalla de demostración.");render();return}state.members[i].role=e.target.value;render()}});
+document.addEventListener("click",e=>{let b=e.target.closest(".task-delete");if(b){state.tasks=state.tasks.filter(t=>t.id!==Number(b.dataset.id));render()}let p=e.target.closest(".product-delete");if(p){state.shopping=state.shopping.filter(x=>x.id!==Number(p.dataset.id));render()}let m=e.target.closest(".edit-meal");if(m)openModal("meal",Number(m.dataset.index));});
+document.querySelectorAll("[data-task-filter]").forEach(b=>b.onclick=()=>{taskFilter=b.dataset.taskFilter;document.querySelectorAll("[data-task-filter]").forEach(x=>x.classList.toggle("active",x===b));render()});
+$("#makeShopping").onclick=()=>alert("En la siguiente versión, cada receta tendrá ingredientes y podrás añadirlos a la compra automáticamente.");
+$("#profileBtn").onclick=()=>go("settings");
+load();render();
+if("serviceWorker" in navigator && location.protocol.startsWith("http"))window.addEventListener("load",()=>navigator.serviceWorker.register("./sw.js").catch(()=>{}));
+</script>
+</body>
+</html>

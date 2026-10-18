@@ -1,0 +1,32 @@
+NUESTRA CASA — PROTOTIPO INICIAL
+
+Qué incluye:
+- Pantalla de inicio.
+- Vistas de calendario, tareas, lista de compra, menú semanal y familia/permisos.
+- Formularios básicos para añadir eventos, tareas y productos.
+- Cambios de demostración guardados localmente en el navegador.
+- Diseño adaptable a iPhone y Android.
+- Estructura PWA básica.
+
+IMPORTANTE:
+Este paquete es un prototipo visual y funcional en un único navegador, no una aplicación familiar lista para producción.
+Todavía NO incluye:
+- Usuarios reales, contraseñas o invitaciones.
+- Sincronización en la nube entre cuatro móviles.
+- Autorización real de permisos ni protección de datos privados.
+- Notificaciones push.
+- Ingredientes estructurados por receta y generación automática real de la compra.
+
+No introduzcas datos médicos ni información privada real en esta demo.
+
+Siguiente fase recomendada:
+1. Conectar autenticación segura y base de datos en la nube.
+2. Crear el hogar familiar y las invitaciones.
+3. Implementar permisos en el servidor/base de datos, no solo en la interfaz.
+4. Sincronizar calendario, tareas, compra y comidas entre dispositivos.
+5. Añadir recordatorios y probar en iPhone y Android.
+
+Para probar:
+- Descomprime el ZIP.
+- Abre index.html en un navegador para probar la interfaz.
+- Para instalar como PWA se debe publicar mediante HTTPS.
