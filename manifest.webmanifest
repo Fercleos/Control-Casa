@@ -1,8 +1,9 @@
 {
   "name": "Nuestra Casa",
   "short_name": "Nuestra Casa",
+  "id": "./",
   "description": "Organizador familiar compartido",
-  "start_url": "./",
+  "start_url": "./index.html",
   "scope": "./",
   "display": "standalone",
   "orientation": "portrait",
@@ -11,9 +12,15 @@
   "icons": [
     {
       "src": "icon.svg",
-      "sizes": "any",
+      "sizes": "192x192 512x512",
       "type": "image/svg+xml",
       "purpose": "any"
+    },
+    {
+      "src": "icon.svg",
+      "sizes": "192x192 512x512",
+      "type": "image/svg+xml",
+      "purpose": "maskable"
     }
   ],
   "lang": "es"
