@@ -1,7 +1,7 @@
 {
   "name": "Nuestra Casa",
   "short_name": "Nuestra Casa",
-  "id": "./",
+  "id": "./index.html",
   "description": "Organizador familiar compartido",
   "start_url": "./index.html",
   "scope": "./",
