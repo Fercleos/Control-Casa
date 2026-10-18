@@ -27,6 +27,9 @@ CREATE TABLE IF NOT EXISTS public.family_app_state (
 
 ALTER TABLE public.family_app_state ENABLE ROW LEVEL SECURITY;
 
+-- Permisos SQL necesarios para que la app pueda leer y guardar con la sesión familiar.
+GRANT SELECT, INSERT, UPDATE ON public.family_app_state TO authenticated;
+
 DROP POLICY IF EXISTS app_state_read_household ON public.family_app_state;
 CREATE POLICY app_state_read_household
   ON public.family_app_state FOR SELECT TO authenticated
