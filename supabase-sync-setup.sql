@@ -12,6 +12,11 @@ CREATE TABLE IF NOT EXISTS public.household_member (
 );
 CREATE INDEX IF NOT EXISTS household_member_user_id_idx ON public.household_member(user_id);
 ALTER TABLE public.household_member ENABLE ROW LEVEL SECURITY;
+GRANT SELECT ON public.household_member TO authenticated;
+DROP POLICY IF EXISTS household_member_self_read ON public.household_member;
+CREATE POLICY household_member_self_read
+  ON public.household_member FOR SELECT TO authenticated
+  USING (user_id = (SELECT auth.uid()));
 
 CREATE TABLE IF NOT EXISTS public.family_app_state (
   household_id uuid PRIMARY KEY REFERENCES public.households(id) ON DELETE CASCADE,
