@@ -22,6 +22,7 @@
 :root[data-theme="dark"] .chip.active{background:var(--green2);color:var(--green);border-color:#4e6f99}
 :root[data-theme="dark"] .quick button,:root[data-theme="dark"] .full-list,:root[data-theme="dark"] .chip,:root[data-theme="dark"] .inputrow input,:root[data-theme="dark"] .field input,:root[data-theme="dark"] .field select,:root[data-theme="dark"] .field textarea,:root[data-theme="dark"] .secondary,:root[data-theme="dark"] .close,:root[data-theme="dark"] .mealcard,:root[data-theme="dark"] .member select{background:var(--card);color:var(--ink)}
 
+.calendar-toolbar{display:flex;align-items:center;justify-content:space-between;gap:8px;margin:4px 0 14px}.calendar-toolbar h3{margin:0;text-align:center;font-size:17px;flex:1;text-transform:capitalize}.calendar-toolbar .chip{font-size:14px;padding:8px 12px}.calendar-weekdays,.calendar-grid{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:5px}.calendar-weekdays{margin-bottom:6px;text-align:center;color:var(--muted);font-size:12px;font-weight:800}.calendar-weekdays span{padding:8px 0}.calendar-day{border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:12px;min-height:82px;padding:7px 5px;text-align:left;min-width:0;overflow:hidden}.calendar-day.outside{opacity:.38}.calendar-day.selected{border:2px solid var(--green);background:var(--green2);padding:6px 4px}.calendar-day.today .day-number{background:var(--green);color:white;border-radius:50%;display:inline-grid;place-items:center;width:25px;height:25px}.day-number{display:inline-grid;place-items:center;width:25px;height:25px;font-size:12px;font-weight:800}.calendar-event-mark{display:flex;align-items:center;gap:4px;min-width:0;margin-top:4px;font-size:10px;line-height:1.15}.calendar-event-mark i,.calendar-legend i{width:7px;height:7px;border-radius:50%;display:inline-block;flex-shrink:0}.calendar-event-mark span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.calendar-more{font-size:9px;color:var(--muted);margin:3px 0 0 10px}.calendar-legend{display:flex;gap:10px;flex-wrap:wrap;margin:14px 0 18px;color:var(--muted);font-size:11px}.calendar-legend span{display:flex;align-items:center;gap:5px}.calendar-legend i{width:9px;height:9px}.calendar-agenda{margin-bottom:12px}@media(max-width:420px){.calendar-weekdays,.calendar-grid{gap:3px}.calendar-day{min-height:64px;padding:4px 2px;border-radius:8px}.calendar-day.selected{padding:3px 1px}.day-number{width:21px;height:21px;font-size:11px}.calendar-event-mark{margin-top:4px;font-size:9px;gap:2px}.calendar-event-mark i{width:6px;height:6px}.calendar-more{font-size:8px;margin-left:7px}.calendar-toolbar .chip{padding:7px 9px}}
 </style>
 </head>
 <body>
@@ -32,7 +33,7 @@
 </header>
 <main class="content">
 <section id="home" class="page active">
-  <div class="welcome"><div><h2>¡Buenos días!</h2><p>Esto es lo que tenemos en marcha.</p></div><span class="demo">PROTOTIPO</span></div>
+  <div class="welcome"><div><h2>¡Buenos días!</h2><p>Esto es lo que tenemos en marcha.</p></div></div>
   <div class="quick">
     <button data-go="calendar"><span class="ico">🗓️</span><strong>Calendario</strong></button>
     <button data-go="tasks"><span class="ico">☑️</span><strong>Tareas</strong></button>
@@ -48,9 +49,12 @@
 </section>
 <section id="calendar" class="page">
   <div class="section-title"><h2>Calendario familiar</h2><button class="add" id="addEventBtn">＋ Evento</button></div>
-  <div class="filters"><button class="chip active">Próximos eventos</button><button class="chip">Este mes</button></div>
-  <div class="full-list" id="eventsList"></div>
-  <div class="notice">🔒 En la versión final, cada evento podrá tener asistentes y un nivel de privacidad. Los detalles médicos privados solo serán visibles para las personas autorizadas.</div>
+  <div class="calendar-toolbar"><button class="chip" id="prevMonth" aria-label="Mes anterior">‹</button><h3 id="calendarMonth"></h3><button class="chip" id="nextMonth" aria-label="Mes siguiente">›</button><button class="chip" id="todayBtn">Hoy</button></div>
+  <div class="calendar-weekdays"><span>L</span><span>M</span><span>X</span><span>J</span><span>V</span><span>S</span><span>D</span></div>
+  <div class="calendar-grid" id="calendarGrid"></div>
+  <div class="calendar-legend"><span><i style="background:#dc3545"></i>Médico / Salud</span><span><i style="background:#239653"></i>Fútbol</span><span><i style="background:#2878d0"></i>Viajes</span><span><i style="background:#8b5cc7"></i>Colegio</span><span><i style="background:#d99026"></i>Gestiones</span><span><i style="background:#159c9a"></i>Familia</span></div>
+  <div class="panel calendar-agenda"><div class="panel-head"><h3 id="selectedDateTitle">Citas del día</h3><span class="pill" id="selectedCount">0 citas</span></div><div id="eventsList"></div></div>
+  
 </section>
 <section id="tasks" class="page">
   <div class="section-title"><h2>Tareas del hogar</h2><button class="add" id="addTaskBtn">＋ Tarea</button></div>
@@ -62,18 +66,18 @@
   <form class="inputrow" id="shoppingForm"><input id="shoppingInput" placeholder="Añadir producto (ej. leche)" aria-label="Producto" required><select id="shoppingCategory" aria-label="Categoría" style="width:135px;flex:0 0 135px;border:1px solid var(--line);background:var(--card);border-radius:12px;padding:8px;color:var(--ink)"><option>Fruta y verdura</option><option>Carne y pescado</option><option>Lácteos</option><option>Panadería</option><option>Bebidas</option><option>Hogar</option><option>Higiene</option><option>Mascotas</option><option>Otros</option></select><button class="add">＋ Añadir</button></form>
   <div class="filters" id="shoppingFilters"><button class="chip active" data-shopping-filter="Todos">Todos</button><button class="chip" data-shopping-filter="Fruta y verdura">Fruta y verdura</button><button class="chip" data-shopping-filter="Carne y pescado">Carne y pescado</button><button class="chip" data-shopping-filter="Lácteos">Lácteos</button><button class="chip" data-shopping-filter="Panadería">Panadería</button><button class="chip" data-shopping-filter="Bebidas">Bebidas</button><button class="chip" data-shopping-filter="Hogar">Hogar</button><button class="chip" data-shopping-filter="Higiene">Higiene</button><button class="chip" data-shopping-filter="Mascotas">Mascotas</button><button class="chip" data-shopping-filter="Otros">Otros</button></div>
   <div class="full-list" id="shoppingList"></div>
-  <div class="notice">💡 En la versión final, todos podrán añadir y marcar productos. Modificar o borrar dependerá de los permisos que configure el administrador.</div>
+  
 </section>
 <section id="meals" class="page">
   <div class="section-title"><h2>Menú semanal</h2><button class="add" id="addMealBtn">＋ Comida</button></div>
   <div class="filters"><button class="chip active">Esta semana</button><button class="chip">Recetas guardadas</button></div>
   <div class="mealgrid" id="mealGrid"></div>
   <button class="add" id="makeShopping" style="width:100%;margin-top:14px">＋ Pasar ingredientes a la compra</button>
-  <div class="notice">🥕 La integración automática de ingredientes se activará en una siguiente fase, cuando las recetas tengan ingredientes definidos.</div>
+  
 </section>
 <section id="settings" class="page">
   <div class="section-title"><h2>Familia y permisos</h2><span class="pill">Administrador</span></div>
-  <div class="panel"><h3 style="margin-bottom:10px">Miembros de la casa</h3><div id="membersList"></div><div class="notice">Esta pantalla muestra el diseño previsto. Las cuentas reales, invitaciones y permisos seguros requieren conectar un servicio de autenticación y una base de datos en la nube.</div></div>
+  <div class="panel"><h3 style="margin-bottom:10px">Miembros de la casa</h3><div id="membersList"></div></div>
   <div class="panel" style="margin-top:15px"><h3>Preferencias</h3><div class="listrow"><span>🔔</span><div class="grow"><strong>Recordatorios</strong><small>Próximamente</small></div><span class="pill">Por configurar</span></div><div class="listrow"><span>🔐</span><div class="grow"><strong>Privacidad de citas</strong><small>Control de visibilidad por usuario</small></div><span class="pill">Diseño previsto</span></div></div>
 </section>
 </main>
@@ -108,21 +112,25 @@ const state={
  members:[{name:"Administrador",role:"Administrador",initial:"A"},{name:"Miembro 2",role:"Adulto",initial:"M"},{name:"Miembro 3",role:"Adolescente",initial:"M"},{name:"Miembro 4",role:"Adolescente",initial:"M"}]
 };
 let nextId=100, modalType=null, taskFilter="all", shoppingFilter="Todos";
+let calendarMonth=new Date(new Date().getFullYear(),new Date().getMonth(),1);
+let nowDate=new Date();let selectedDate=nowDate.getFullYear()+"-"+String(nowDate.getMonth()+1).padStart(2,"0")+"-"+String(nowDate.getDate()).padStart(2,"0");
+function eventColor(kind){const k=String(kind||"").toLowerCase();if(k.includes("salud")||k.includes("médic")||k.includes("medic"))return "#dc3545";if(k.includes("fútbol")||k.includes("futbol")||k.includes("deporte"))return "#239653";if(k.includes("viaje"))return "#2878d0";if(k.includes("colegio"))return "#8b5cc7";if(k.includes("gestión")||k.includes("gestion"))return "#d99026";if(k.includes("familia"))return "#159c9a";return "#667788";}
 function futureDate(n){let d=new Date();d.setDate(d.getDate()+n);return d.toISOString().slice(0,10)}
 function niceDate(s){return new Date(s+"T12:00:00").toLocaleDateString("es-ES",{weekday:"short",day:"numeric",month:"short"})}
 function escapeHtml(s){return String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
 function save(){try{localStorage.setItem("nuestraCasaDemo",JSON.stringify(state))}catch(e){}}
 function load(){try{let d=JSON.parse(localStorage.getItem("nuestraCasaDemo"));if(d&&d.events&&d.tasks&&d.shopping&&d.meals){Object.assign(state,d)}}catch(e){}}
-function eventHTML(e){return `<div class="listrow"><span class="dot"></span><div class="grow"><strong>${escapeHtml(e.title)}</strong><small>${niceDate(e.date)} · ${escapeHtml(e.time)} · ${escapeHtml(e.who)} · ${escapeHtml(e.kind||"Evento")}</small></div><span class="pill">${escapeHtml(e.kind||"Evento")}</span></div>`}
+function eventHTML(e){const color=eventColor(e.kind);return `<div class="listrow"><span class="dot" style="background:${color}"></span><div class="grow"><strong>${escapeHtml(e.title)}</strong><small>${niceDate(e.date)} · ${escapeHtml(e.time)} · ${escapeHtml(e.who)} · ${escapeHtml(e.kind||"Evento")}</small></div><span class="pill" style="background:${color}20;color:${color}">${escapeHtml(e.kind||"Evento")}</span></div>`}
 function taskHTML(t){return `<div class="listrow"><input class="check task-check" type="checkbox" data-id="${t.id}" ${t.done?"checked":""}><div class="grow"><strong style="${t.done?'text-decoration:line-through;color:var(--muted)':''}">${escapeHtml(t.title)}</strong><small>${escapeHtml(t.who)} · ${escapeHtml(t.due)}</small></div><button class="delete task-delete" data-id="${t.id}" title="Eliminar">×</button></div>`}
 function productHTML(p){return `<div class="listrow"><input class="check product-check" type="checkbox" data-id="${p.id}" ${p.done?"checked":""}><div class="grow"><strong style="${p.done?'text-decoration:line-through;color:var(--muted)':''}">${escapeHtml(p.name)}</strong><small>${escapeHtml(p.category)}</small></div><button class="delete product-delete" data-id="${p.id}" title="Eliminar">×</button></div>`}
+function renderCalendar(events){const y=calendarMonth.getFullYear(),m=calendarMonth.getMonth();$("#calendarMonth").textContent=calendarMonth.toLocaleDateString("es-ES",{month:"long",year:"numeric"});const first=new Date(y,m,1),offset=(first.getDay()+6)%7,days=new Date(y,m+1,0).getDate(),cells=Math.ceil((offset+days)/7)*7;let html="";for(let i=0;i<cells;i++){const n=i-offset+1,d=new Date(y,m,n),date=d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0"),inMonth=n>=1&&n<=days,today=new Date(),isToday=date===today.getFullYear()+"-"+String(today.getMonth()+1).padStart(2,"0")+"-"+String(today.getDate()).padStart(2,"0"),dayEvents=events.filter(e=>e.date===date).sort((a,b)=>(a.time||"").localeCompare(b.time||""));html+=`<button class="calendar-day ${inMonth?"":"outside"} ${date===selectedDate?"selected":""} ${isToday?"today":""}" data-calendar-date="${date}" aria-label="${date}, ${dayEvents.length} citas"><span class="day-number">${d.getDate()}</span>`;dayEvents.slice(0,2).forEach(e=>{html+=`<span class="calendar-event-mark"><i style="background:${eventColor(e.kind)}"></i><span>${escapeHtml(e.title)}</span></span>`});if(dayEvents.length>2)html+=`<div class="calendar-more">+${dayEvents.length-2} más</div>`;html+="</button>"}$("#calendarGrid").innerHTML=html;const selected=events.filter(e=>e.date===selectedDate).sort((a,b)=>(a.time||"").localeCompare(b.time||""));$("#selectedDateTitle").textContent=new Date(selectedDate+"T12:00:00").toLocaleDateString("es-ES",{weekday:"long",day:"numeric",month:"long"});$("#selectedCount").textContent=selected.length+(selected.length===1?" cita":" citas");$("#eventsList").innerHTML=selected.map(eventHTML).join("")||"<div class=\"empty\">No hay citas este día. Pulsa «+ Evento» para añadir una.</div>"}
 function render(){
  const ev=[...state.events].sort((a,b)=>(a.date+a.time).localeCompare(b.date+b.time));
  $("#homeEvents").innerHTML=ev.slice(0,3).map(e=>`<div class="event"><div class="time">${escapeHtml(e.time)}</div><div class="eventtext"><strong>${escapeHtml(e.title)}</strong><span>${niceDate(e.date)} · ${escapeHtml(e.who)}</span></div></div>`).join("")||'<div class="empty">No hay eventos próximos.</div>';
  const open=state.tasks.filter(t=>!t.done);$("#homeTasks").innerHTML=open.slice(0,3).map(t=>`<div class="task"><span class="dot"></span><div class="tasktext"><strong>${escapeHtml(t.title)}</strong><span>${escapeHtml(t.who)} · ${escapeHtml(t.due)}</span></div></div>`).join("")||'<div class="empty">Todo al día. ¡Buen trabajo!</div>';
  $("#homeShopping").innerHTML=state.shopping.filter(p=>!p.done).slice(0,3).map(p=>`<div class="product"><span>🛒</span><div class="producttext"><strong>${escapeHtml(p.name)}</strong><span>${escapeHtml(p.category)}</span></div></div>`).join("")||'<div class="empty">No falta nada en la lista.</div>';
  const today=new Date().getDay();const meal=state.meals[(today+6)%7];$("#homeMeal").innerHTML=`<div class="mealrow"><span>☀️</span><div class="producttext"><strong>Almuerzo</strong><span>${escapeHtml(meal.lunch)}</span></div></div><div class="mealrow"><span>🌙</span><div class="producttext"><strong>Cena</strong><span>${escapeHtml(meal.dinner)}</span></div></div>`;
- $("#eventsList").innerHTML=ev.map(eventHTML).join("")||'<div class="empty">Todavía no hay eventos. Añade el primero.</div>';
+ renderCalendar(ev);
  let ts=state.tasks.filter(t=>taskFilter==="all"||(taskFilter==="open"&&!t.done)||(taskFilter==="done"&&t.done));$("#tasksList").innerHTML=ts.map(taskHTML).join("")||'<div class="empty">No hay tareas en esta vista.</div>';
  $("#shoppingList").innerHTML=state.shopping.filter(p=>shoppingFilter==="Todos"||p.category===shoppingFilter).map(productHTML).join("")||'<div class="empty">No hay productos en esta categoría.</div>';$("#shoppingCount").textContent=state.shopping.filter(p=>!p.done).length+" pendientes";
  $("#mealGrid").innerHTML=state.meals.map((m,i)=>`<div class="mealcard"><div class="day">${m.day}</div><h4>🍽️ Almuerzo</h4><p>${escapeHtml(m.lunch)}</p><h4>🌙 Cena</h4><p>${escapeHtml(m.dinner)}</p><button class="small-link edit-meal" data-index="${i}">Editar menú</button></div>`).join("");
@@ -134,7 +142,7 @@ document.querySelectorAll("[data-go]").forEach(b=>b.addEventListener("click",()=
 $("#todayLabel").textContent=new Date().toLocaleDateString("es-ES",{weekday:"long",day:"numeric",month:"long"});
 function openModal(type,extra=null){modalType=type;$("#modalFields").innerHTML="";$("#modalTitle").textContent=type==="event"?"Nuevo evento":type==="task"?"Nueva tarea":type==="meal"?"Editar menú":"Añadir";
  let fields=[];
- if(type==="event") fields=[["title","Nombre del evento","text",""],["date","Fecha","date",futureDate(1)],["time","Hora","time","10:00"],["who","¿Quién?","select","Papá","Mamá","David","Samuel","Toda la familia"],["kind","Tipo","select","Familia","Salud","Colegio","Gestión","Otro"]];
+ if(type==="event") fields=[["title","Nombre del evento","text",""],["date","Fecha","date",selectedDate],["time","Hora","time","10:00"],["who","¿Quién?","select","Toda la familia","Papá","Mamá","David","Samuel"],["kind","Tipo","select","Salud","Fútbol","Viaje","Colegio","Familia","Gestión","Otro"]];
  if(type==="task") fields=[["title","Tarea","text",""],["who","Asignar a","select","Papá","Mamá","David","Samuel","Toda la familia"],["due","Cuándo","select","Hoy","Mañana","Esta semana"]];
  if(type==="meal") fields=[["day","Día","text",state.meals[extra].day],["lunch","Almuerzo","text",state.meals[extra].lunch],["dinner","Cena","text",state.meals[extra].dinner],["index","idx","hidden",String(extra)]];
  fields.forEach(f=>{let [name,label,type0,val,...opts]=f;let wrap=document.createElement("div");wrap.className="field";if(type0!=="hidden"){let l=document.createElement("label");l.textContent=label;l.htmlFor="f_"+name;wrap.appendChild(l)}let el;if(type0==="select"){el=document.createElement("select");[val,...opts].forEach(o=>{let op=document.createElement("option");op.value=o;op.textContent=o;el.appendChild(op)})}else{el=document.createElement("input");el.type=type0;el.value=val}el.id="f_"+name;el.name=name;if(name==="title")el.required=true;if(type0==="hidden")wrap.style.display="none";wrap.appendChild(el);$("#modalFields").appendChild(wrap)});
@@ -150,6 +158,10 @@ document.querySelectorAll("[data-task-filter]").forEach(b=>b.onclick=()=>{taskFi
 document.querySelectorAll("[data-shopping-filter]").forEach(b=>b.onclick=()=>{shoppingFilter=b.dataset.shoppingFilter;document.querySelectorAll("[data-shopping-filter]").forEach(x=>x.classList.toggle("active",x===b));render()});
 $("#makeShopping").onclick=()=>alert("En la siguiente versión, cada receta tendrá ingredientes y podrás añadirlos a la compra automáticamente.");
 $("#profileBtn").onclick=()=>go("settings");
+$("#prevMonth").onclick=()=>{calendarMonth=new Date(calendarMonth.getFullYear(),calendarMonth.getMonth()-1,1);selectedDate=calendarMonth.getFullYear()+"-"+String(calendarMonth.getMonth()+1).padStart(2,"0")+"-01";render()};
+$("#nextMonth").onclick=()=>{calendarMonth=new Date(calendarMonth.getFullYear(),calendarMonth.getMonth()+1,1);selectedDate=calendarMonth.getFullYear()+"-"+String(calendarMonth.getMonth()+1).padStart(2,"0")+"-01";render()};
+$("#todayBtn").onclick=()=>{const d=new Date();calendarMonth=new Date(d.getFullYear(),d.getMonth(),1);selectedDate=d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0");render()};
+$("#calendarGrid").addEventListener("click",e=>{const b=e.target.closest("[data-calendar-date]");if(b){selectedDate=b.dataset.calendarDate;calendarMonth=new Date(Number(selectedDate.slice(0,4)),Number(selectedDate.slice(5,7))-1,1);render()}});
 function applyTheme(theme){document.documentElement.dataset.theme=theme;try{localStorage.setItem("nuestraCasaTheme",theme)}catch(e){}$("#themeToggle").textContent=theme==="dark"?"☀️":"🌙";$("#themeToggle").setAttribute("aria-label",theme==="dark"?"Activar modo día":"Activar modo noche")}
 $("#themeToggle").onclick=()=>applyTheme(document.documentElement.dataset.theme==="dark"?"light":"dark");
 let savedTheme="light";try{savedTheme=localStorage.getItem("nuestraCasaTheme")||"light"}catch(e){}applyTheme(savedTheme);
