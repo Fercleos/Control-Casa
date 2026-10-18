@@ -79,6 +79,7 @@
   <div class="section-title"><h2>Familia y permisos</h2><span class="pill">Administrador</span></div>
   <div class="panel"><h3 style="margin-bottom:10px">Miembros de la casa</h3><div id="membersList"></div></div>
   <div class="panel" style="margin-top:15px"><h3>Preferencias</h3><div class="listrow"><span>🔔</span><div class="grow"><strong>Recordatorios</strong><small>Próximamente</small></div><span class="pill">Por configurar</span></div><div class="listrow"><span>🔐</span><div class="grow"><strong>Privacidad de citas</strong><small>Control de visibilidad por usuario</small></div><span class="pill">Diseño previsto</span></div></div>
+  <div class="panel" style="margin-top:15px"><h3>Copia de seguridad</h3><p class="muted">Guarda los datos actuales de este teléfono antes de activar la sincronización familiar.</p><button class="add" id="exportDataBtn" style="width:100%">Descargar copia de mis datos</button><small class="muted">No borra ni modifica nada de la aplicación.</small></div>
 </section>
 </main>
 <nav class="nav"><div class="nav-inner">
@@ -154,6 +155,7 @@ document.querySelectorAll("[data-task-filter]").forEach(b=>b.onclick=()=>{taskFi
 document.querySelectorAll("[data-shopping-filter]").forEach(b=>b.onclick=()=>{shoppingFilter=b.dataset.shoppingFilter;document.querySelectorAll("[data-shopping-filter]").forEach(x=>x.classList.toggle("active",x===b));render()});
 $("#makeShopping").onclick=()=>alert("En la siguiente versión, cada receta tendrá ingredientes y podrás añadirlos a la compra automáticamente.");
 $("#profileBtn").onclick=()=>go("settings");
+$("#exportDataBtn").onclick=()=>{try{const payload={app:"Nuestra Casa",version:1,exportedAt:new Date().toISOString(),data:state};const blob=new Blob([JSON.stringify(payload,null,2)],{type:"application/json"});const url=URL.createObjectURL(blob);const a=document.createElement("a");a.href=url;a.download="nuestra-casa-copia.json";document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1000);alert("Copia descargada. Conserva el archivo: contiene los datos de esta casa.")}catch(err){alert("No se ha podido crear la copia. No se ha borrado ningún dato.")}};
 $("#prevMonth").onclick=()=>{calendarMonth=new Date(calendarMonth.getFullYear(),calendarMonth.getMonth()-1,1);selectedDate=calendarMonth.getFullYear()+"-"+String(calendarMonth.getMonth()+1).padStart(2,"0")+"-01";render()};
 $("#nextMonth").onclick=()=>{calendarMonth=new Date(calendarMonth.getFullYear(),calendarMonth.getMonth()+1,1);selectedDate=calendarMonth.getFullYear()+"-"+String(calendarMonth.getMonth()+1).padStart(2,"0")+"-01";render()};
 $("#todayBtn").onclick=()=>{const d=new Date();calendarMonth=new Date(d.getFullYear(),d.getMonth(),1);selectedDate=d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0");render()};
