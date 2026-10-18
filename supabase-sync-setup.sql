@@ -107,4 +107,4 @@ BEGIN
     ) USING v_household_id, v_user_id, '{"calendar":true,"tasks":true,"shopping":true,"meals":true}'::jsonb;
   END IF;
   RAISE NOTICE 'Nuestra Casa preparada. household_id=%', v_household_id;
-END $;
+END $$;
