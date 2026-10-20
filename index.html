@@ -173,7 +173,7 @@ function syncLeagueFixtures(){
  if(!Array.isArray(state.events))state.events=[];
  let changed=false;
  // Elimina de las versiones anteriores los partidos del Celta que no corresponden al Betis.
- const unwanted=state.events.filter(e=>e.leagueFixtureKey==="celta-rayo-20261031"||e.leagueFixtureKey==="celta-betis-20261025"&&e.title!=="LaLiga: Celta - Real Betis");
+ const unwanted=state.events.filter(e=>e.leagueFixtureKey==="celta-rayo-20261031"||e.leagueFixtureKey==="celta-betis-20261025");
  if(unwanted.length){state.events=state.events.filter(e=>!unwanted.includes(e));changed=true}
  // Solo conservar partidos seguidos: Betis y Villarreal. El resto de partidos automáticos de equipos ajenos se elimina.
  const teamPattern=/\b(Betis|Villarreal)\b/i;
