@@ -51,7 +51,7 @@
     <div class="panel-head"><h3>⚽ Betis y Villarreal · LaLiga</h3><span class="muted" style="font-size:11px">Actualizado: 20 oct. 2026</span></div>
     <h4 style="margin:4px 0 8px;font-size:13px">Próximo partido de Liga</h4>
     <div class="football-match"><img class="football-crest" src="https://crests.football-data.org/90.png" alt="Escudo del Real Betis"><div class="football-info"><strong>Celta – Real Betis</strong><span>Domingo, 25 de octubre · 16:15 h</span></div><span class="pill">Jornada 10</span></div>
-    <div class="football-match"><img class="football-crest" src="https://crests.football-data.org/532.png" alt="Escudo del Valencia CF"><div class="football-info"><strong>Valencia – Villarreal</strong><span>Sábado, 24 de octubre · 18:30 h</span></div><span class="pill">Jornada 10</span><img class="football-crest" src="https://crests.football-data.org/94.png" alt="Escudo del Villarreal CF"></div>
+    <div class="football-match"><img class="football-crest" src="https://crests.football-data.org/94.png" alt="Escudo del Villarreal CF"><div class="football-info"><strong>Valencia – Villarreal</strong><span>Sábado, 24 de octubre · 18:30 h</span></div><span class="pill">Jornada 10</span></div>
     <div style="border-top:1px solid var(--line);margin-top:12px;padding-top:13px">
       <h4 style="margin:0 0 8px;font-size:13px">Clasificación de LaLiga</h4>
       <div class="football-table-wrap"><table class="football-table"><thead><tr><th>Pos.</th><th>Equipo</th><th>PJ</th><th>G</th><th>E</th><th>P</th><th>GF</th><th>GC</th><th>Pts</th></tr></thead><tbody>
@@ -155,6 +155,7 @@ window.addEventListener("nuestra-casa-cloud-load",e=>{
   if(!d||!Array.isArray(d.events)||!Array.isArray(d.tasks)||!Array.isArray(d.shopping)||!Array.isArray(d.meals))return;
   Object.assign(state,d);
   normalizeMemberNames();
+  syncLeagueFixtures();
   try{localStorage.setItem("nuestraCasaDemo",JSON.stringify(state))}catch(err){}
   render();
 });
@@ -172,7 +173,13 @@ function syncLeagueFixtures(){
  ];
  if(!Array.isArray(state.events))state.events=[];
  let changed=false;
- fixtures.forEach(f=>{if(!state.events.some(e=>e.leagueFixtureKey===f.leagueFixtureKey)) {state.events.push({id:nextId++,...f});changed=true}});
+ fixtures.forEach(f=>{
+  const existing=state.events.find(e=>e.leagueFixtureKey===f.leagueFixtureKey);
+  if(!existing){state.events.push({id:nextId++,...f});changed=true}
+  else if(existing.date!==f.date||existing.time!==f.time||existing.title!==f.title||existing.kind!=="Fútbol"){
+   Object.assign(existing,f);changed=true;
+  }
+ });
  if(changed)save();
 }
 function render(){
