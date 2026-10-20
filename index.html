@@ -178,7 +178,7 @@ function syncLeagueFixtures(){
 function render(){
  const ev=[...state.events].sort((a,b)=>(a.date+a.time).localeCompare(b.date+b.time));
  const homeNow=Date.now(),homeCutoff=homeNow-60*60*1000;
- const homeUpcoming=ev.filter(e=>{const when=new Date(`${e.date}T${e.time||"00:00"}:00`).getTime();return Number.isFinite(when)&&when>=homeCutoff;});
+ const homeUpcoming=ev.filter(e=>{if(e.leagueFixtureKey)return false;const when=new Date(`${e.date}T${e.time||"00:00"}:00`).getTime();return Number.isFinite(when)&&when>=homeCutoff;});
  $("#homeEvents").innerHTML=homeUpcoming.slice(0,3).map(e=>`<div class="event home-event-color" style="--event-color:${eventColor(e.kind)}"><div class="time">${escapeHtml(e.time)}</div><div class="eventtext"><strong>${escapeHtml(e.title)}</strong><span>${niceDate(e.date)} · ${escapeHtml(Array.isArray(e.who)?e.who.join(", "):e.who)}</span></div></div>`).join("")||'<div class="empty">No hay eventos próximos.</div>';
  const open=state.tasks.filter(t=>!t.done);$("#homeTasks").innerHTML=open.slice(0,3).map(t=>`<div class="task"><span class="dot"></span><div class="tasktext"><strong>${escapeHtml(t.title)}</strong><span>${escapeHtml(t.who)} · ${escapeHtml(t.due)}</span></div></div>`).join("")||'<div class="empty">Todo al día. ¡Buen trabajo!</div>';
  $("#homeShopping").innerHTML=state.shopping.filter(p=>p.done).slice(0,5).map(p=>`<div class="product"><input class="check product-check" type="checkbox" data-id="${p.id}" checked><div class="producttext"><strong>${escapeHtml(p.name)}</strong><span>${escapeHtml(p.category)}</span></div></div>`).join("")||'<div class="empty">Marca los artículos que necesitas comprar y aparecerán aquí.</div>';
