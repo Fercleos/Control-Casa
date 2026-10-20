@@ -50,13 +50,13 @@
   <div class="panel" id="footballPanel" style="margin-top:16px">
     <div class="panel-head"><h3>⚽ Betis y Villarreal · LaLiga</h3><span class="muted" style="font-size:11px">Actualizado: 20 oct. 2026</span></div>
     <h4 style="margin:4px 0 8px;font-size:13px">Próximo partido de Liga</h4>
-    <div class="football-match"><img class="football-crest" src="https://upload.wikimedia.org/wikipedia/en/4/43/Real_Betis_logo.svg" alt="Escudo del Real Betis"><div class="football-info"><strong>Celta – Real Betis</strong><span>Domingo, 25 de octubre · 16:15 h</span></div><span class="pill">Jornada 10</span></div>
-    <div class="football-match"><img class="football-crest" src="https://upload.wikimedia.org/wikipedia/en/b/b9/Valencia_CF_Logo.svg" alt="Escudo del Valencia CF"><div class="football-info"><strong>Valencia – Villarreal</strong><span>Sábado, 24 de octubre · 18:30 h</span></div><span class="pill">Jornada 10</span><img class="football-crest" src="https://upload.wikimedia.org/wikipedia/en/7/70/Villarreal_CF_logo.svg" alt="Escudo del Villarreal CF"></div>
+    <div class="football-match"><img class="football-crest" src="https://crests.football-data.org/90.png" alt="Escudo del Real Betis"><div class="football-info"><strong>Celta – Real Betis</strong><span>Domingo, 25 de octubre · 16:15 h</span></div><span class="pill">Jornada 10</span></div>
+    <div class="football-match"><img class="football-crest" src="https://crests.football-data.org/532.png" alt="Escudo del Valencia CF"><div class="football-info"><strong>Valencia – Villarreal</strong><span>Sábado, 24 de octubre · 18:30 h</span></div><span class="pill">Jornada 10</span><img class="football-crest" src="https://crests.football-data.org/94.png" alt="Escudo del Villarreal CF"></div>
     <div style="border-top:1px solid var(--line);margin-top:12px;padding-top:13px">
       <h4 style="margin:0 0 8px;font-size:13px">Clasificación de LaLiga</h4>
       <div class="football-table-wrap"><table class="football-table"><thead><tr><th>Pos.</th><th>Equipo</th><th>PJ</th><th>G</th><th>E</th><th>P</th><th>GF</th><th>GC</th><th>Pts</th></tr></thead><tbody>
-      <tr><td>4.º</td><td><img class="table-crest" src="https://upload.wikimedia.org/wikipedia/en/4/43/Real_Betis_logo.svg" alt=""> Real Betis</td><td>9</td><td>6</td><td>1</td><td>2</td><td>16</td><td>14</td><td><strong>19</strong></td></tr>
-      <tr><td>12.º</td><td><img class="table-crest" src="https://upload.wikimedia.org/wikipedia/en/7/70/Villarreal_CF_logo.svg" alt=""> Villarreal</td><td>9</td><td>2</td><td>3</td><td>4</td><td>13</td><td>13</td><td><strong>9</strong></td></tr>
+      <tr><td>4.º</td><td><img class="table-crest" src="https://crests.football-data.org/90.png" alt=""> Real Betis</td><td>9</td><td>6</td><td>1</td><td>2</td><td>16</td><td>14</td><td><strong>19</strong></td></tr>
+      <tr><td>12.º</td><td><img class="table-crest" src="https://crests.football-data.org/94.png" alt=""> Villarreal</td><td>9</td><td>2</td><td>3</td><td>4</td><td>13</td><td>13</td><td><strong>9</strong></td></tr>
       </tbody></table></div><p class="muted" style="font-size:10px;line-height:1.4;margin:9px 0 0">PJ: partidos jugados · G: ganados · E: empatados · P: perdidos · GF/GC: goles a favor/en contra. Datos consultados el 20 de octubre de 2026.</p>
     </div>
   </div>
@@ -162,6 +162,19 @@ function eventHTML(e){const color=eventColor(e.kind);const attendees=Array.isArr
 function taskHTML(t){return `<div class="listrow"><input class="check task-check" type="checkbox" data-id="${t.id}" ${t.done?"checked":""}><div class="grow"><strong style="${t.done?'text-decoration:line-through;color:var(--muted)':''}">${escapeHtml(t.title)}</strong><small>${escapeHtml(t.who)} · ${escapeHtml(t.due)}</small></div><button class="delete task-delete" data-id="${t.id}" title="Eliminar">×</button></div>`}
 function productHTML(p){return `<div class="listrow"><input class="check product-check" type="checkbox" data-id="${p.id}" ${p.done?"checked":""}><div class="grow"><strong style="${p.done?'text-decoration:line-through;color:var(--muted)':''}">${escapeHtml(p.name)}</strong><small>${escapeHtml(p.category)}</small></div><button class="delete product-delete" data-id="${p.id}" title="Eliminar">×</button></div>`}
 function renderCalendar(events){const y=calendarMonth.getFullYear(),m=calendarMonth.getMonth();$("#calendarMonth").textContent=calendarMonth.toLocaleDateString("es-ES",{month:"long",year:"numeric"});const first=new Date(y,m,1),offset=(first.getDay()+6)%7,days=new Date(y,m+1,0).getDate(),cells=Math.ceil((offset+days)/7)*7;let html="";for(let i=0;i<cells;i++){const n=i-offset+1,d=new Date(y,m,n),date=d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0"),inMonth=n>=1&&n<=days,today=new Date(),isToday=date===today.getFullYear()+"-"+String(today.getMonth()+1).padStart(2,"0")+"-"+String(today.getDate()).padStart(2,"0"),dayEvents=events.filter(e=>e.date===date).sort((a,b)=>(a.time||"").localeCompare(b.time||""));html+=`<button class="calendar-day ${inMonth?"":"outside"} ${date===selectedDate?"selected":""} ${isToday?"today":""}" data-calendar-date="${date}" aria-label="${date}, ${dayEvents.length} citas"><span class="day-number">${d.getDate()}</span>`;dayEvents.slice(0,2).forEach(e=>{html+=`<span class="calendar-event-mark"><i style="background:${eventColor(e.kind)}"></i><span>${escapeHtml(e.title)}</span></span>`});if(dayEvents.length>2)html+=`<div class="calendar-more">+${dayEvents.length-2} más</div>`;html+="</button>"}$("#calendarGrid").innerHTML=html;const selected=events.filter(e=>e.date===selectedDate).sort((a,b)=>(a.time||"").localeCompare(b.time||""));$("#selectedDateTitle").textContent=new Date(selectedDate+"T12:00:00").toLocaleDateString("es-ES",{weekday:"long",day:"numeric",month:"long"});$("#selectedCount").textContent=selected.length+(selected.length===1?" cita":" citas");$("#eventsList").innerHTML=selected.map(eventHTML).join("")||"<div class=\"empty\">No hay citas este día. Pulsa «+ Evento» para añadir una.</div>"}
+function syncLeagueFixtures(){
+ const fixtures=[
+  {date:"2026-10-25",time:"16:15",title:"LaLiga: Celta - Real Betis",who:["Toda la familia"],kind:"Fútbol",leagueFixtureKey:"celta-betis-20261025"},
+  {date:"2026-10-31",time:"16:15",title:"LaLiga: Rayo Vallecano - Celta",who:["Toda la familia"],kind:"Fútbol",leagueFixtureKey:"celta-rayo-20261031"},
+  {date:"2026-10-24",time:"18:30",title:"LaLiga: Valencia - Villarreal",who:["Toda la familia"],kind:"Fútbol",leagueFixtureKey:"villarreal-valencia-20261024"},
+  {date:"2026-10-30",time:"21:00",title:"LaLiga: Villarreal - Espanyol",who:["Toda la familia"],kind:"Fútbol",leagueFixtureKey:"villarreal-espanyol-20261030"},
+  {date:"2026-11-08",time:"18:30",title:"LaLiga: Villarreal - Getafe",who:["Toda la familia"],kind:"Fútbol",leagueFixtureKey:"villarreal-getafe-20261108"}
+ ];
+ if(!Array.isArray(state.events))state.events=[];
+ let changed=false;
+ fixtures.forEach(f=>{if(!state.events.some(e=>e.leagueFixtureKey===f.leagueFixtureKey)) {state.events.push({id:nextId++,...f});changed=true}});
+ if(changed)save();
+}
 function render(){
  const ev=[...state.events].sort((a,b)=>(a.date+a.time).localeCompare(b.date+b.time));
  const homeNow=Date.now(),homeCutoff=homeNow-60*60*1000;
@@ -212,7 +225,7 @@ $("#eventsList").addEventListener("click",e=>{const b=e.target.closest("[data-ed
 function applyTheme(theme){document.documentElement.dataset.theme=theme;try{localStorage.setItem("nuestraCasaTheme",theme)}catch(e){}$("#themeToggle").textContent=theme==="dark"?"☀️":"🌙";$("#themeToggle").setAttribute("aria-label",theme==="dark"?"Activar modo día":"Activar modo noche")}
 $("#themeToggle").onclick=()=>applyTheme(document.documentElement.dataset.theme==="dark"?"light":"dark");
 let savedTheme="light";try{savedTheme=localStorage.getItem("nuestraCasaTheme")||"light"}catch(e){}applyTheme(savedTheme);
-load();render();
+load();syncLeagueFixtures();render();
 if("serviceWorker" in navigator && location.protocol.startsWith("http"))window.addEventListener("load",()=>navigator.serviceWorker.register("./sw.js").catch(()=>{}));
 </script>
 <script src="./sync.js"></script>
