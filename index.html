@@ -171,6 +171,7 @@ function syncLeagueFixtures(){
   {date:"2026-10-30",time:"21:00",title:"LaLiga: Villarreal - Espanyol",who:["Toda la familia"],kind:"Fútbol",leagueFixtureKey:"villarreal-espanyol-20261030"},
   {date:"2026-11-08",time:"18:30",title:"LaLiga: Villarreal - Getafe",who:["Toda la familia"],kind:"Fútbol",leagueFixtureKey:"villarreal-getafe-20261108"},
   {date:"2026-11-08",time:"14:00",title:"LaLiga: Elche - Real Betis",who:["Toda la familia"],kind:"Fútbol",leagueFixtureKey:"betis-elche-20261108"},
+  {date:"2026-10-31",time:"18:30",title:"Málaga - Real Betis",who:["Toda la familia"],kind:"Fútbol",leagueFixtureKey:"betis-malaga-20261031"},
   // Copa del Rey y competición europea.
   {date:"2026-10-21",time:"21:00",title:"Europa: Real Betis - Feyenoord",who:["Toda la familia"],kind:"Fútbol",leagueFixtureKey:"betis-feyenoord-europe-20261021"},
   {date:"2026-10-28",time:"21:00",title:"Copa del Rey: Navalcarnero - Real Betis",who:["Toda la familia"],kind:"Fútbol",leagueFixtureKey:"betis-navalcarnero-copa-20261028"},
@@ -183,7 +184,6 @@ function syncLeagueFixtures(){
  const obsoleteKeys=new Set(["celta-rayo-20261031","celta-betis-20261025"]);
  const unwanted=state.events.filter(e=>
   obsoleteKeys.has(e.leagueFixtureKey) ||
-  (e.kind==="Fútbol" && /betis/i.test(e.title||"") && /málaga|malaga/i.test(e.title||"")) ||
   (e.leagueFixtureKey && /celta-rayo/i.test(e.leagueFixtureKey))
  );
  if(unwanted.length){state.events=state.events.filter(e=>!unwanted.includes(e));changed=true}
