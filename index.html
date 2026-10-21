@@ -40,18 +40,6 @@
     <button data-go="shopping"><span class="ico">🛒</span><strong>Compra</strong></button>
     <button data-go="meals"><span class="ico">🍲</span><strong>Comidas</strong></button>
   </div>
-  <div class="panel" id="tussamPanel" style="margin-bottom:16px">
-    <div class="panel-head"><h3>🚌 Tu autobús de siempre</h3><button class="small-link" id="refreshTussam" type="button">Actualizar ↻</button></div>
-    <div style="display:flex;align-items:center;gap:12px">
-      <div style="width:48px;height:48px;border-radius:14px;background:var(--green2);display:grid;place-items:center;font-size:25px;flex-shrink:0">🚌</div>
-      <div style="flex:1;min-width:0"><strong style="font-size:16px">Línea 3 · hacia Bellavista</strong><div class="muted" style="font-size:12px;margin-top:4px">Parada 260 · Agricultores (Camino de Los Toros)</div></div>
-      <div id="tussamCountdown" style="text-align:right;min-width:88px"><strong style="font-size:15px">Comprobando…</strong></div>
-    </div>
-    <div id="tussamEstimates" style="margin-top:12px"></div>
-    <div id="tussamStatus" class="muted" aria-live="polite" style="font-size:12px;line-height:1.45;margin-top:10px">Intentando consultar los tiempos en directo…</div>
-    <div style="display:flex;justify-content:space-between;align-items:center;gap:10px;margin-top:10px"><span id="tussamUpdated" class="muted" style="font-size:10px">Sin actualizar</span><a href="https://reddelineas.tussam.es/API/infotus-ui/tiempos/260" target="_blank" rel="noopener noreferrer" style="font-size:12px;font-weight:700;color:var(--green);text-decoration:none">Abrir fuente ↗</a></div>
-    <div style="margin-top:8px"><a href="https://horariossevilla.es/tussam/parada/260-agricultores-camino-de-los-toros" target="_blank" rel="noopener noreferrer" style="font-size:12px;color:var(--green);text-decoration:none">Ver horario programado ↗</a></div>
-  </div>
   <div class="panel" id="weatherPanel" style="margin-bottom:16px"><div class="panel-head"><h3>🌤️ El tiempo en Sevilla</h3><button class="small-link" id="refreshWeather" type="button">Actualizar ↻</button></div><div id="homeWeather" aria-live="polite" style="display:flex;align-items:center;gap:16px;flex-wrap:wrap"><span style="font-size:30px">🌤️</span><div><strong>Consultando el tiempo…</strong><div class="muted" style="font-size:12px;margin-top:4px">Previsión de hoy</div></div></div></div>
   <div class="grid">
     <div class="panel"><div class="panel-head"><h3>Próximos eventos</h3><button class="small-link" data-go="calendar">Ver calendario →</button></div><div id="homeEvents"></div></div>
@@ -315,52 +303,6 @@ document.querySelectorAll("[data-go]").forEach(b=>b.addEventListener("click",()=
 $("#todayLabel").textContent=new Date().toLocaleDateString("es-ES",{weekday:"long",day:"numeric",month:"long"});
 function updateDailyWelcome(){const now=new Date(),hour=now.getHours();const greeting=hour>=6&&hour<12?"¡Buenos días!":hour>=12&&hour<20?"¡Buenas tardes!":"¡Buenas noches!";$("#greetingTitle").textContent=greeting;const phrases=["Cada pequeño paso cuenta. Sigue avanzando a tu ritmo.","Que hoy encuentres motivos para sonreír y personas con quienes compartirlos.","No hace falta que el día sea perfecto para que tenga algo bonito.","Las cosas buenas crecen cuando las cuidamos con cariño.","Hoy puede ser un buen día para empezar algo pequeño y hacerlo bien.","A veces, lo mejor del día está en los detalles más sencillos.","Que no te falten ilusión para empezar ni calma para disfrutar.","Un gesto amable puede cambiarle el día a alguien.","Avanza sin prisa, pero sin dejar de creer en lo que haces.","La felicidad también vive en los ratitos tranquilos de cada día.","Haz lo que puedas hoy; lo demás podrá esperar.","Siempre hay algo que agradecer y algo bonito por descubrir.","Los días mejores también se construyen con pequeñas decisiones.","Que hoy te acompañen la tranquilidad, la alegría y el cariño.","No subestimes todo lo bueno que puedes aportar con algo sencillo.","Un hogar se llena de alegría con tiempo, paciencia y pequeños detalles.","Respira hondo: no tienes que resolverlo todo de golpe.","Que hoy tengas más momentos que te hagan bien que preocupaciones.","La constancia de hoy es el orgullo de mañana.","Disfruta el camino; los pequeños momentos también son parte de la meta.","Una palabra bonita nunca sobra.","Hoy es una nueva oportunidad para hacer las cosas un poquito mejor.","Cuida de los tuyos, pero acuérdate también de cuidarte.","La mejor energía empieza muchas veces con una buena actitud.","Que al final del día puedas recordar al menos una cosa que te hizo sonreír.","Lo sencillo, cuando se comparte, puede convertirse en algo extraordinario.","No necesitas hacerlo todo: basta con dar el siguiente paso.","La paciencia también es una forma de avanzar.","Un día normal puede guardar un recuerdo precioso.","Pon cariño en lo que hagas y deja espacio para disfrutar."];const dayKey=now.getFullYear()+"-"+String(now.getMonth()+1).padStart(2,"0")+"-"+String(now.getDate()).padStart(2,"0");let hash=0;for(let i=0;i<dayKey.length;i++)hash=(hash*31+dayKey.charCodeAt(i))>>>0;$("#dailyPhrase").textContent=phrases[hash%phrases.length]}
 updateDailyWelcome();
-async function loadTussamEstimate(){
- const countdown=document.getElementById("tussamCountdown"),status=document.getElementById("tussamStatus"),updated=document.getElementById("tussamUpdated"),list=document.getElementById("tussamEstimates"),button=document.getElementById("refreshTussam");
- if(!countdown||!status)return;
- if(button)button.disabled=true;
- countdown.innerHTML='<strong style="font-size:15px">Consultando…</strong>';
- status.textContent="Probando la consulta de tiempos de TUSSAM…";
- if(list)list.innerHTML="";
- try{
-  const response=await fetch("https://reddelineas.tussam.es/API/infotus-ui/tiempos/260",{cache:"no-store",headers:{Accept:"application/json"}});
-  if(!response.ok)throw new Error("HTTP "+response.status);
-  const data=await response.json();
-  const all=[];
-  const seen=new Set();
-  function walk(value){
-   if(!value||typeof value!=="object")return;
-   if(Array.isArray(value)){value.forEach(walk);return;}
-   const flat=Object.entries(value).reduce((o,[k,v])=>{o[k.toLowerCase()]=v;return o;},{});
-   const line=String(flat.linea??flat.codigolinea??flat.label??flat.idlinea??"");
-   const dest=String(flat.destino??flat.nombredestino??flat.sentido??flat.nombrelinea??"");
-   const time=flat.minutos??flat.tiempo??flat.tiempominutos??flat.minutollegada??flat.estimacion??flat.seconds??flat.segundos;
-   const dist=flat.distancia??flat.distanciametros??flat.metros;
-   const text=Object.values(flat).filter(v=>typeof v==="string"||typeof v==="number").join(" ");
-   const looksLine3=(line==="3"||/\b3\b/.test(line+" "+text));
-   const looksBellavista=/bellavista/i.test(dest+" "+text);
-   const n=Number(time);
-   if(looksLine3&&looksBellavista&&Number.isFinite(n)&&n>=0&&!seen.has(line+"|"+dest+"|"+n)){
-    seen.add(line+"|"+dest+"|"+n);
-    all.push({minutes:/segundos|seconds/i.test(Object.keys(flat).join(" "))?Math.ceil(n/60):Math.ceil(n),distance:dist,dest:dest||"Bellavista"});
-   }
-   Object.values(value).forEach(walk);
-  }
-  walk(data);
-  if(!all.length)throw new Error("La API responde, pero no reconocemos el formato de los tiempos.");
-  all.sort((x,y)=>x.minutes-y.minutes);
-  countdown.innerHTML='<strong style="font-size:25px">'+all[0].minutes+' min</strong><div class="muted" style="font-size:11px">próximo bus</div>';
-  if(list)list.innerHTML=all.slice(0,3).map(x=>'<div style="display:flex;justify-content:space-between;gap:12px;padding:8px 0;border-top:1px solid var(--border)"><span>🚌 Línea 3 · '+x.dest+'</span><strong>'+x.minutes+' min'+(x.distance!=null?' · '+x.distance+' m':'')+'</strong></div>').join("");
-  status.textContent="Estimación recibida de la fuente de TUSSAM.";
-  if(updated)updated.textContent="Actualizado: "+new Date().toLocaleTimeString("es-ES",{hour:"2-digit",minute:"2-digit"});
- }catch(err){
-  countdown.innerHTML='<strong style="font-size:14px">No disponible</strong><div class="muted" style="font-size:11px">tiempo real</div>';
-  status.textContent="No hemos podido leer la API antigua desde esta página (posible bloqueo de acceso o CORS). No mostraremos minutos inventados; puedes abrir la fuente o consultar el horario.";
-  if(updated)updated.textContent="Último intento: "+new Date().toLocaleTimeString("es-ES",{hour:"2-digit",minute:"2-digit"});
- }finally{if(button)button.disabled=false;}
-}
-document.getElementById("refreshTussam")?.addEventListener("click",loadTussamEstimate);
-loadTussamEstimate();
 async function loadSevilleWeather(){const box=$("#homeWeather");try{const url="https://api.open-meteo.com/v1/forecast?latitude=37.3891&longitude=-5.9845&current=temperature_2m,apparent_temperature,weather_code&daily=weather_code,temperature_2m_max,temperature_2m_min,sunrise,sunset&timezone=Europe%2FMadrid&forecast_days=1";const response=await fetch(url,{cache:"no-store"});if(!response.ok)throw new Error("weather");const data=await response.json();const code=Number(data.current.weather_code),currentTemp=Math.round(data.current.temperature_2m),feelsLike=Math.round(data.current.apparent_temperature),max=Math.round(data.daily.temperature_2m_max[0]),min=Math.round(data.daily.temperature_2m_min[0]),sunrise=new Date(data.daily.sunrise[0]).toLocaleTimeString("es-ES",{hour:"2-digit",minute:"2-digit",hour12:false,timeZone:"Europe/Madrid"}),sunset=new Date(data.daily.sunset[0]).toLocaleTimeString("es-ES",{hour:"2-digit",minute:"2-digit",hour12:false,timeZone:"Europe/Madrid"});let icon="☀️",desc="Despejado";if(code===1){icon="🌤️";desc="Mayormente despejado"}else if(code===2){icon="⛅";desc="Parcialmente nuboso"}else if(code===3){icon="☁️";desc="Nublado"}else if([45,48].includes(code)){icon="🌫️";desc="Niebla"}else if([51,53,55,56,57,61,63,65,66,67,80,81,82].includes(code)){icon="🌧️";desc="Lluvia"}else if([71,73,75,77,85,86].includes(code)){icon="🌨️";desc="Nieve"}else if([95,96,99].includes(code)){icon="⛈️";desc="Tormenta"}else if(code===0){icon="☀️";desc="Soleado"}const date=new Date().toLocaleDateString("es-ES",{weekday:"long",day:"numeric",month:"long"});box.innerHTML='<span style="font-size:42px" aria-hidden="true">'+icon+'</span><div style="flex:1;min-width:180px"><strong style="font-size:15px;text-transform:capitalize">'+desc+'</strong><div style="display:flex;align-items:center;gap:16px;flex-wrap:wrap;margin-top:5px"><div style="font-size:30px;font-weight:800;line-height:1.1">'+currentTemp+' °C <span style="font-size:11px;font-weight:600;color:var(--muted)">ahora</span></div><div style="font-size:12px;color:var(--muted)">Sensación térmica: <strong>'+feelsLike+' °C</strong><br>Máx. <strong>'+max+' °C</strong> · Mín. <strong>'+min+' °C</strong></div></div><div style="display:flex;gap:18px;flex-wrap:wrap;margin-top:10px;font-size:13px"><span>🌅 Sale el sol: <strong>'+sunrise+'</strong></span><span>🌇 Se pone el sol: <strong>'+sunset+'</strong></span></div><div class="muted" style="font-size:12px;margin-top:5px;text-transform:capitalize">'+date+'</div></div>'}catch(err){box.innerHTML='<span style="font-size:30px">🌤️</span><div><strong>No se ha podido cargar el tiempo</strong><div class="muted" style="font-size:12px;margin-top:4px">Comprueba la conexión e inténtalo de nuevo.</div></div>'}}
 $("#refreshWeather").onclick=loadSevilleWeather;
 loadSevilleWeather();
