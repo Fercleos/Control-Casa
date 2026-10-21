@@ -48,12 +48,9 @@
     <div class="panel"><div class="panel-head"><h3>Menú de hoy</h3><button class="small-link" data-go="meals">Planificar →</button></div><div id="homeMeal"></div></div>
   </div>
   <div class="panel" id="footballPanel" style="margin-top:16px">
-    <div class="panel-head"><h3>⚽ Betis y Villarreal · Próximos partidos</h3><span class="muted" style="font-size:11px">Actualizado: 20 oct. 2026</span></div>
+    <div class="panel-head"><h3>⚽ Betis y Villarreal · Próximos partidos</h3><span class="muted" id="footballUpdated" style="font-size:11px">Actualizado automáticamente</span></div>
     <h4 style="margin:4px 0 8px;font-size:13px">Los 4 próximos partidos</h4>
-    <div class="football-match"><img class="football-crest" src="https://crests.football-data.org/94.png" alt="Escudo del Villarreal CF"><div class="football-info"><strong>Liverpool – Villarreal</strong><span>Hoy, martes 20 de octubre · 21:00 h</span></div><span class="pill">Champions</span></div>
-    <div class="football-match"><img class="football-crest" src="https://crests.football-data.org/90.png" alt="Escudo del Real Betis"><div class="football-info"><strong>Real Betis – Feyenoord</strong><span>Mañana, miércoles 21 de octubre · 21:00 h</span></div><span class="pill">Champions</span></div>
-    <div class="football-match"><img class="football-crest" src="https://crests.football-data.org/94.png" alt="Escudo del Villarreal CF"><div class="football-info"><strong>Valencia – Villarreal</strong><span>Sábado, 24 de octubre · 18:30 h</span></div><span class="pill">LaLiga</span></div>
-    <div class="football-match"><img class="football-crest" src="https://crests.football-data.org/90.png" alt="Escudo del Real Betis"><div class="football-info"><strong>Celta – Real Betis</strong><span>Domingo, 25 de octubre · 16:15 h</span></div><span class="pill">LaLiga</span></div>
+    <div id="footballUpcoming"><div class="empty">Actualizando próximos partidos…</div></div>
     <div style="border-top:1px solid var(--line);margin-top:12px;padding-top:13px">
       <h4 style="margin:0 0 8px;font-size:13px">Clasificación de Liga</h4>
       <div style="display:grid;gap:8px;margin-bottom:12px">
@@ -251,6 +248,20 @@ function syncLeagueFixtures(){
   {date:"2026-11-03",time:"21:00",title:"Champions: Villarreal - Paris Saint-Germain",who:["Toda la familia"],kind:"Fútbol",leagueFixtureKey:"villarreal-psg-ucl-20261103"},
   {date:"2026-11-04",time:"21:00",title:"Europa: Borussia Dortmund - Real Betis",who:["Toda la familia"],kind:"Fútbol",leagueFixtureKey:"betis-dortmund-europe-20261104"}
  ];
+ // La portada muestra siempre los cuatro partidos futuros, ocultando automáticamente los ya disputados.
+ const upcomingBox=document.getElementById("footballUpcoming");
+ if(upcomingBox){
+  const now=new Date();
+  const upcoming=fixtures.filter(f=>new Date(f.date+"T"+f.time+":00").getTime()>now.getTime())
+   .sort((a,b)=>(a.date+a.time).localeCompare(b.date+b.time)).slice(0,4);
+  const crestFor=f=>/Villarreal/i.test(f.title)?"https://crests.football-data.org/94.png":"https://crests.football-data.org/90.png";
+  const teamFor=f=>/Villarreal/i.test(f.title)?"Villarreal CF":"Real Betis";
+  const leagueFor=f=>f.title.split(":")[0];
+  const dateFor=f=>new Date(f.date+"T12:00:00").toLocaleDateString("es-ES",{weekday:"long",day:"numeric",month:"long"});
+  upcomingBox.innerHTML=upcoming.map(f=>'<div class="football-match"><img class="football-crest" src="'+crestFor(f)+'" alt="Escudo de '+teamFor(f)+'"><div class="football-info"><strong>'+escapeHtml(f.title.split(": ").slice(1).join(": ").replace(/ - /g," – "))+'</strong><span>'+dateFor(f)+' · '+f.time+' h</span></div><span class="pill">'+escapeHtml(leagueFor(f))+'</span></div>').join("")||'<div class="empty">No hay partidos próximos cargados.</div>';
+  const updated=document.getElementById("footballUpdated");
+  if(updated)updated.textContent="Actualizado: "+now.toLocaleDateString("es-ES",{day:"numeric",month:"short"});
+ }
  if(!Array.isArray(state.events))state.events=[];
  let changed=false;
  // Retira partidos erróneos de versiones anteriores; conserva el Betis - Málaga del 31 de octubre.
