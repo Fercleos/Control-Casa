@@ -1,4 +1,4 @@
-const CACHE="nuestra-casa-demo-v45";
+const CACHE="nuestra-casa-demo-v46";
 const FILES=["./","./index.html","./manifest.webmanifest","./icon.svg","./sync.js"];
 self.addEventListener("install",e=>{self.skipWaiting();e.waitUntil(caches.open(CACHE).then(c=>c.addAll(FILES)))});
 self.addEventListener("activate",e=>e.waitUntil(caches.keys().then(keys=>Promise.all(keys.filter(k=>k!==CACHE).map(k=>caches.delete(k)))).then(()=>self.clients.claim())));
