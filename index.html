@@ -119,7 +119,6 @@
 <tr class=""><td>36</td><td>Slovan Bratislava</td><td>2</td><td><strong>0</strong></td></tr></tbody></table></div>
         <p class="muted" style="font-size:10px;line-height:1.4;margin:9px 0 8px">Fase liga tras la jornada 2 (14 de octubre de 2026). Esta tabla no se actualiza en directo.</p>
       </details>
-      <p style="font-size:12px;margin:0"><a href="https://www.uefa.com/uefachampionsleague/standings/" target="_blank" rel="noopener noreferrer">Ver clasificación actualizada en UEFA ↗</a> · <a href="https://www.laliga.com/laliga-easports/clasificacion" target="_blank" rel="noopener noreferrer">Ver clasificación actualizada de LaLiga ↗</a></p>
       </div>
     </div>
   </div>
@@ -255,13 +254,14 @@ async function refreshFootballStandings(){
  const name=r=>String(pick(r,["team","teamName","team_name","name","displayName","club"])||"");
  const get=async codes=>{for(const code of codes){try{const res=await fetch(base+code+"/standings?season="+season,{cache:"no-store"});if(!res.ok)continue;const a=rowsOf(await res.json());if(a.length&&a.some(x=>name(x)))return a}catch(e){}}return null};
  const getEspnUcl=async()=>{try{const res=await fetch("https://site.api.espn.com/apis/v2/sports/soccer/uefa.champions/standings",{cache:"no-store"});if(!res.ok)return null;const a=rowsOf(await res.json());return a.length&&a.some(x=>name(x))?a:null}catch(e){return null}};
+ const getEspnLiga=async()=>{try{const res=await fetch("https://site.api.espn.com/apis/v2/sports/soccer/esp.1/standings",{cache:"no-store"});if(!res.ok)return null;const a=rowsOf(await res.json());return a.length&&a.some(x=>name(x))?a:null}catch(e){return null}};
  const n=(r,ks)=>{const v=pick(r,ks);return Number(typeof v==="object"&&v?pick(v,["value","displayValue"]):v)||0};
  const pos=(r,a)=>n(r,["position","rank","place"])||a.indexOf(r)+1;
  const safe=s=>escapeHtml(String(s==null?"—":s));
  const render=(id,a,ucl)=>{document.getElementById(id).innerHTML=a.map(r=>{const nm=name(r),p=pos(r,a),b=/real betis/i.test(nm),v=/villarreal/i.test(nm),cls=b?"team-betis":v?"team-villarreal":"",crest=b?'<img class="table-crest" src="https://crests.football-data.org/90.png" alt="">':v?'<img class="table-crest" src="https://crests.football-data.org/94.png" alt="">':"",pj=n(r,["played","playedGames","matches","gamesPlayed","games_played"]),g=n(r,["won","wins","win"]),e=n(r,["drawn","draws","draw"]),l=n(r,["lost","losses","loss"]),gf=n(r,["goalsFor","goals_for","goalsScored","for"]),gc=n(r,["goalsAgainst","goals_against","goalsConceded","against"]),pts=n(r,["points","pts"]);return '<tr class="'+cls+'"><td>'+p+'</td><td>'+crest+safe(nm)+'</td><td>'+pj+'</td>'+(ucl?'':'<td>'+g+'</td><td>'+e+'</td><td>'+l+'</td><td>'+gf+'</td><td>'+gc+'</td>')+'<td><strong>'+pts+'</strong></td></tr>'}).join("")};
  const ordinal=p=>p?p+".º":"—";
  try{
-  const ligaPromise=get(["esp.1"]);
+  const ligaPromise=(async()=>await get(["esp.1"])||await getEspnLiga())();
   const uclPromise=(async()=>await get(["uefa.champions","uefa.champions-league","uefa.champions_league","uefa.championsleague","ucl"])||await getEspnUcl())();
   const results=await Promise.all([ligaPromise,uclPromise]);let count=0;
   const ids=[["betisLigaPosition","villarrealLigaPosition"],["betisUclPosition","villarrealUclPosition"]];
