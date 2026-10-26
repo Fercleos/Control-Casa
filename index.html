@@ -272,43 +272,51 @@ async function refreshFootballStandings(){
 document.getElementById("refreshStandingsBtn").addEventListener("click",refreshFootballStandings);
 function syncLeagueFixtures(){
  const fixtures=[
-  // LaLiga: solo encuentros del Betis o del Villarreal.
-  {date:"2026-10-25",time:"16:15",title:"LaLiga: Celta - Real Betis",who:["Toda la familia"],kind:"Fútbol",leagueFixtureKey:"betis-celta-20261025"},
-  {date:"2026-10-24",time:"18:30",title:"LaLiga: Valencia - Villarreal",who:["Toda la familia"],kind:"Fútbol",leagueFixtureKey:"villarreal-valencia-20261024"},
-  {date:"2026-10-30",time:"21:00",title:"LaLiga: Villarreal - Espanyol",who:["Toda la familia"],kind:"Fútbol",leagueFixtureKey:"villarreal-espanyol-20261030"},
-  {date:"2026-11-08",time:"18:30",title:"LaLiga: Villarreal - Getafe",who:["Toda la familia"],kind:"Fútbol",leagueFixtureKey:"villarreal-getafe-20261108"},
-  {date:"2026-11-08",time:"14:00",title:"LaLiga: Elche - Real Betis",who:["Toda la familia"],kind:"Fútbol",leagueFixtureKey:"betis-elche-20261108"},
-  {date:"2026-10-31",time:"18:30",title:"LaLiga: Real Betis - Málaga",who:["Toda la familia"],kind:"Fútbol",leagueFixtureKey:"betis-malaga-20261031"},
-  // Copa del Rey y competición europea.
-  {date:"2026-10-21",time:"21:00",title:"Europa: Real Betis - Feyenoord",who:["Toda la familia"],kind:"Fútbol",leagueFixtureKey:"betis-feyenoord-europe-20261021"},
+  // Solo partidos oficiales del primer equipo de Betis o Villarreal con fecha y hora local confirmadas.
+  {date:"2026-10-27",time:"21:00",title:"Copa del Rey: Manacor - Villarreal",who:["Toda la familia"],kind:"Fútbol",leagueFixtureKey:"villarreal-manacor-copa-20261027"},
   {date:"2026-10-28",time:"21:00",title:"Copa del Rey: Navalcarnero - Real Betis",who:["Toda la familia"],kind:"Fútbol",leagueFixtureKey:"betis-navalcarnero-copa-20261028"},
-  {date:"2026-11-03",time:"21:00",title:"Champions: Villarreal - Paris Saint-Germain",who:["Toda la familia"],kind:"Fútbol",leagueFixtureKey:"villarreal-psg-ucl-20261103"},
-  {date:"2026-11-04",time:"21:00",title:"Europa: Borussia Dortmund - Real Betis",who:["Toda la familia"],kind:"Fútbol",leagueFixtureKey:"betis-dortmund-europe-20261104"}
+  {date:"2026-10-30",time:"21:00",title:"LaLiga: Villarreal - Espanyol",who:["Toda la familia"],kind:"Fútbol",leagueFixtureKey:"villarreal-espanyol-20261030"},
+  {date:"2026-10-31",time:"18:30",title:"LaLiga: Real Betis - Málaga",who:["Toda la familia"],kind:"Fútbol",leagueFixtureKey:"betis-malaga-20261031"},
+  {date:"2026-11-03",time:"21:00",title:"Champions League: Villarreal - PSG",who:["Toda la familia"],kind:"Fútbol",leagueFixtureKey:"villarreal-psg-ucl-20261103"},
+  {date:"2026-11-04",time:"21:00",title:"Champions League: Borussia Dortmund - Real Betis",who:["Toda la familia"],kind:"Fútbol",leagueFixtureKey:"betis-dortmund-europe-20261104"},
+  {date:"2026-11-08",time:"14:00",title:"LaLiga: Elche - Real Betis",who:["Toda la familia"],kind:"Fútbol",leagueFixtureKey:"betis-elche-20261108"},
+  {date:"2026-11-08",time:"18:30",title:"LaLiga: Villarreal - Getafe",who:["Toda la familia"],kind:"Fútbol",leagueFixtureKey:"villarreal-getafe-20261108"},
+  {date:"2026-11-21",time:"18:30",title:"LaLiga: Sevilla - Real Betis",who:["Toda la familia"],kind:"Fútbol",leagueFixtureKey:"betis-sevilla-20261121"},
+  {date:"2026-11-22",time:"14:00",title:"LaLiga: Barcelona - Villarreal",who:["Toda la familia"],kind:"Fútbol",leagueFixtureKey:"villarreal-barcelona-20261122"},
+  {date:"2026-11-24",time:"21:00",title:"Champions League: Slovan Bratislava - Real Betis",who:["Toda la familia"],kind:"Fútbol",leagueFixtureKey:"betis-slovan-ucl-20261124"},
+  {date:"2026-11-25",time:"18:45",title:"Champions League: Slavia Praha - Villarreal",who:["Toda la familia"],kind:"Fútbol",leagueFixtureKey:"villarreal-slavia-ucl-20261125"},
+  {date:"2026-12-08",time:"18:45",title:"Champions League: Villarreal - Sabah",who:["Toda la familia"],kind:"Fútbol",leagueFixtureKey:"villarreal-sabah-ucl-20261208"},
+  {date:"2026-12-09",time:"18:45",title:"Champions League: Real Betis - Como",who:["Toda la familia"],kind:"Fútbol",leagueFixtureKey:"betis-como-ucl-20261209"},
+  {date:"2027-01-20",time:"18:45",title:"Champions League: Fenerbahçe - Villarreal",who:["Toda la familia"],kind:"Fútbol",leagueFixtureKey:"villarreal-fenerbahce-ucl-20270120"},
+  {date:"2027-01-20",time:"21:00",title:"Champions League: Real Betis - Arsenal",who:["Toda la familia"],kind:"Fútbol",leagueFixtureKey:"betis-arsenal-ucl-20270120"},
+  {date:"2027-01-27",time:"21:00",title:"Champions League: Villarreal - Manchester United",who:["Toda la familia"],kind:"Fútbol",leagueFixtureKey:"villarreal-man-utd-ucl-20270127"},
+  {date:"2027-01-27",time:"21:00",title:"Champions League: Bayern München - Real Betis",who:["Toda la familia"],kind:"Fútbol",leagueFixtureKey:"betis-bayern-ucl-20270127"}
  ];
- // La portada muestra siempre los cuatro partidos futuros, ocultando automáticamente los ya disputados.
+ // La portada muestra solo los cuatro siguientes encuentros futuros, ordenados por fecha y hora local.
  const upcomingBox=document.getElementById("footballUpcoming");
  if(upcomingBox){
   const now=new Date();
   const upcoming=fixtures.filter(f=>new Date(f.date+"T"+f.time+":00").getTime()>now.getTime())
    .sort((a,b)=>(a.date+a.time).localeCompare(b.date+b.time)).slice(0,4);
-  const crestFor=f=>/Villarreal/i.test(f.title)?"https://crests.football-data.org/94.png":"https://crests.football-data.org/90.png";
-  const teamFor=f=>/Villarreal/i.test(f.title)?"Villarreal CF":"Real Betis";
+  const isVillarreal=f=>f.leagueFixtureKey.startsWith("villarreal-");
+  const crestFor=f=>isVillarreal(f)?"https://crests.football-data.org/94.png":"https://crests.football-data.org/90.png";
+  const teamFor=f=>isVillarreal(f)?"Villarreal CF":"Real Betis";
   const leagueFor=f=>f.title.split(":")[0];
   const dateFor=f=>new Date(f.date+"T12:00:00").toLocaleDateString("es-ES",{weekday:"long",day:"numeric",month:"long"});
-  upcomingBox.innerHTML=upcoming.map(f=>'<div class="football-match"><img class="football-crest" src="'+crestFor(f)+'" alt="Escudo de '+teamFor(f)+'"><div class="football-info"><strong>'+escapeHtml(f.title.split(": ").slice(1).join(": ").replace(/ - /g," – "))+'</strong><span>'+dateFor(f)+' · '+f.time+' h</span></div><span class="pill">'+escapeHtml(leagueFor(f))+'</span></div>').join("")||'<div class="empty">No hay partidos próximos cargados.</div>';
+  upcomingBox.innerHTML=upcoming.map(f=>'<div class="football-match"><img class="football-crest" src="'+crestFor(f)+'" alt="Escudo de '+teamFor(f)+'"><div class="football-info"><strong>'+escapeHtml(f.title.split(": ").slice(1).join(": ").replace(/ - /g," – "))+'</strong><span>'+dateFor(f)+' · '+escapeHtml(f.time)+' h</span></div><span class="pill">'+escapeHtml(leagueFor(f))+'</span></div>').join("")||'<div class="empty">No hay partidos próximos con fecha y hora confirmadas.</div>';
   const updated=document.getElementById("footballUpdated");
   if(updated)updated.textContent="Actualizado: "+now.toLocaleDateString("es-ES",{day:"numeric",month:"short"});
  }
  if(!Array.isArray(state.events))state.events=[];
  let changed=false;
- // Retira partidos erróneos de versiones anteriores; conserva el Betis - Málaga del 31 de octubre.
+ // Retira registros obsoletos conocidos; conserva el historial de otros partidos ya jugados.
  const obsoleteKeys=new Set(["celta-rayo-20261031","celta-betis-20261025"]);
  const unwanted=state.events.filter(e=>
   obsoleteKeys.has(e.leagueFixtureKey) ||
   (e.leagueFixtureKey && /celta-rayo/i.test(e.leagueFixtureKey))
  );
  if(unwanted.length){state.events=state.events.filter(e=>!unwanted.includes(e));changed=true}
- // Solo retirar registros de partidos automáticos que no correspondan a Betis o Villarreal.
+ // Solo se sincronizan eventos automáticos cuyo encuentro incluye al Betis o al Villarreal.
  const unrelatedLeague=state.events.filter(e=>e.leagueFixtureKey && !/\b(Betis|Villarreal)\b/i.test(e.title||""));
  if(unrelatedLeague.length){state.events=state.events.filter(e=>!unrelatedLeague.includes(e));changed=true}
  fixtures.forEach(f=>{
