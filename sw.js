@@ -1,4 +1,4 @@
-// Versión de caché/despliegue: nuestra-casa-v2026-10-26-1.
+// Versión de caché/despliegue: nuestra-casa-v2026-10-26-2.
 // Este trabajador de recuperación elimina las cachés antiguas y se desregistra para cargar siempre los archivos actuales.
 self.addEventListener("install",e=>{self.skipWaiting();});
 self.addEventListener("activate",e=>e.waitUntil(
