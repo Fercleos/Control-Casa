@@ -1,4 +1,5 @@
-// Recuperación: desactivar la caché de la PWA para que todos los dispositivos carguen los archivos actuales.
+// Versión de caché/despliegue: nuestra-casa-v2026-10-26-1.
+// Este trabajador de recuperación elimina las cachés antiguas y se desregistra para cargar siempre los archivos actuales.
 self.addEventListener("install",e=>{self.skipWaiting();});
 self.addEventListener("activate",e=>e.waitUntil(
  caches.keys().then(keys=>Promise.all(keys.map(k=>caches.delete(k))))
